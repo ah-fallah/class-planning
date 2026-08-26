@@ -90,8 +90,11 @@ export default function TimetableGrid({
           {Array.from({ length: END_HOUR - START_HOUR }, (_, i) => i + START_HOUR).map((h) => (
             <span
               key={h}
-              className="absolute inset-x-0 -translate-y-1/2 text-center text-sm font-semibold tabular-nums text-muted-foreground"
-              style={{ top: `${(((h - START_HOUR) * 60) / TOTAL_MIN) * 100}%` }}
+              className="absolute inset-x-0 text-center text-sm font-semibold tabular-nums text-muted-foreground"
+              style={{
+                top: `${(((h - START_HOUR) * 60) / TOTAL_MIN) * 100}%`,
+                transform: h === START_HOUR ? undefined : 'translateY(-50%)',
+              }}
             >
               {`${String(h).padStart(2, '0')}:00`}
             </span>

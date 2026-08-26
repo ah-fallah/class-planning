@@ -80,6 +80,10 @@ export default function DashboardPage() {
           </Button>
         </div>
 
+        {/* لیست کارت‌ها در باکس اسکرول‌شونده؛ ارتفاع = ارتفاع جدول */}
+        {/* dir=ltr روی باکس تا اسکرول‌بار در سمت راست بماند؛ محتوای داخل rtl است */}
+        <div dir="ltr" className="min-h-0 overflow-y-auto pe-1 lg:max-h-[calc(clamp(340px,100dvh_-_300px,620px)_+_33px)]">
+          <div dir="rtl" className="flex flex-col gap-3 [&>*]:shrink-0">
         {courses.length === 0 && (
           <Card className="border-dashed">
             <CardContent className="pt-6 text-center text-sm leading-relaxed text-muted-foreground">
@@ -105,6 +109,8 @@ export default function DashboardPage() {
             }}
           />
         ))}
+          </div>
+        </div>
       </section>
 
       {/* ستون وسط: جدول هفتگی */}
