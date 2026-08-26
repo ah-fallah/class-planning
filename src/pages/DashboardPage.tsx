@@ -120,6 +120,9 @@ export default function DashboardPage() {
 
       {/* ستون چپ: وضعیت + پیشنهاد + تنظیمات */}
       <aside aria-label="وضعیت" className="order-3 flex flex-col gap-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <h2 className="text-sm font-extrabold tracking-tight">وضعیت</h2>
+        </div>
         <UnitsPanel units={units} min={settings.minUnits} max={settings.maxUnits} />
 
         <SuggestionsMiniPanel
