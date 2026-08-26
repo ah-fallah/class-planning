@@ -82,7 +82,7 @@ export default function DashboardPage() {
 
         {/* لیست کارت‌ها در باکس اسکرول‌شونده؛ ارتفاع = ارتفاع جدول */}
         {/* dir=ltr روی باکس تا اسکرول‌بار در سمت راست بماند؛ محتوای داخل rtl است */}
-        <div dir="ltr" className="min-h-0 overflow-y-scroll pe-1 lg:max-h-[calc(clamp(340px,100dvh_-_300px,620px)_+_33px)]">
+        <div dir="ltr" className="min-h-0 overflow-y-auto pe-1 lg:max-h-[calc(clamp(340px,100dvh_-_300px,620px)_+_33px)] lg:[scrollbar-gutter:stable]">
           <div dir="rtl" className="flex flex-col gap-3 [&>*]:shrink-0">
         {courses.length === 0 && (
           <Card className="border-[3px] border-dashed">
@@ -127,7 +127,7 @@ export default function DashboardPage() {
           <h2 className="text-sm font-black tracking-wide">وضعیت</h2>
         </div>
         {/* محتوای ستون داخل باکس اسکرول‌شونده؛ سقف ارتفاع = پایین جدول تا باکس اخطارها از آن پایین‌تر نرود */}
-        <div dir="ltr" className="min-h-0 overflow-y-scroll pe-1 lg:max-h-[calc(clamp(340px,100dvh_-_300px,620px)_+_26px)]">
+        <div dir="ltr" className="min-h-0 overflow-y-auto pe-1 lg:max-h-[calc(clamp(340px,100dvh_-_300px,620px)_+_26px)] lg:[scrollbar-gutter:stable]">
           <div dir="rtl" className="flex flex-col gap-4 [&>*]:shrink-0">
         <UnitsPanel units={units} min={settings.minUnits} max={settings.maxUnits} />
 
