@@ -74,23 +74,23 @@ export default function TimetableGrid({
   const days = DAY_NAMES.slice(0, 6)
 
   return (
-    <div className="rounded-xl border border-border bg-card">
+    <div className="rounded-sm border-2 border-foreground bg-card shadow-[4px_4px_0_var(--color-foreground)]">
       {/* سربرگ روزها */}
-      <div className="grid grid-cols-[52px_repeat(6,minmax(0,1fr))] border-b border-border bg-muted/60">
+      <div className="grid grid-cols-[52px_repeat(6,minmax(0,1fr))] border-b-2 border-foreground bg-foreground text-background">
         <div />
         {days.map((d) => (
-          <div key={d} className="truncate py-2 text-center text-xs font-bold text-muted-foreground">
+          <div key={d} className="truncate py-2 text-center text-xs font-black tracking-wide">
             {d}
           </div>
         ))}
       </div>
       {/* بدنه — ارتفاع واکنش‌گرا تا کل جدول بدون اسکرول در دید بماند */}
       <div className="grid h-[clamp(340px,calc(100dvh_-_300px),620px)] grid-cols-[52px_repeat(6,minmax(0,1fr))]">
-        <div className="relative border-e border-border">
+        <div className="relative border-e-2 border-foreground">
           {Array.from({ length: END_HOUR - START_HOUR }, (_, i) => i + START_HOUR).map((h) => (
             <span
               key={h}
-              className="absolute inset-x-0 text-center text-sm font-semibold tabular-nums text-muted-foreground"
+              className="absolute inset-x-0 text-center text-sm font-bold tabular-nums text-foreground/60"
               style={{
                 top: `${(((h - START_HOUR) * 60) / TOTAL_MIN) * 100}%`,
                 transform: h === START_HOUR ? undefined : 'translateY(-50%)',
@@ -123,11 +123,11 @@ function DayColumn({
   courseColor: (courseId: string) => string
 }) {
   return (
-    <div className="relative border-e border-border last:border-e-0" data-day={day}>
+    <div className="relative border-e-2 border-foreground last:border-e-0" data-day={day}>
       {Array.from({ length: END_HOUR - START_HOUR + 1 }, (_, i) => (
         <div
           key={i}
-          className="absolute inset-x-0 border-t border-border/70"
+          className="absolute inset-x-0 border-t border-foreground/20"
           style={{ top: `${((i * 60) / TOTAL_MIN) * 100}%` }}
         />
       ))}
@@ -140,10 +140,10 @@ function DayColumn({
             key={`${b.course.id}-${bi}`}
             title={`${b.course.name} — گروه ${b.group.number}`}
             className={cn(
-              'absolute inset-x-0.5 overflow-hidden rounded-md px-1.5 py-0.5 text-[10px] leading-snug text-white shadow-sm',
+              'absolute inset-x-0.5 overflow-hidden rounded-none border-2 border-foreground px-1.5 py-0.5 text-[10px] leading-snug text-white shadow-[2px_2px_0_var(--color-foreground)]',
               courseColor(b.course.id),
               b.conflict &&
-                'outline outline-2 outline-offset-[-2px] outline-destructive ring-2 ring-destructive/40',
+                'outline outline-2 outline-offset-[-2px] outline-destructive',
             )}
             style={{
               top: `${Math.max(0, topPct)}%`,
@@ -151,7 +151,7 @@ function DayColumn({
               minHeight: 24,
             }}
           >
-            <span className="block truncate font-bold">{b.course.name}</span>
+            <span className="block truncate font-black">{b.course.name}</span>
             <span className="block truncate opacity-90">
               گ{b.group.number} {minToTime(b.startMin)}–{minToTime(b.endMin)}
             </span>

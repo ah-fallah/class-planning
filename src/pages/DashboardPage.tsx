@@ -63,14 +63,14 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto w-full max-w-[1400px] px-4 py-6 pb-16 sm:px-6 lg:py-8">
-      <header className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-lg font-extrabold tracking-tight">برنامه‌ریز انتخاب واحد</h1>
+      <header className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b-4 border-foreground pb-4">
+        <h1 className="text-xl font-black tracking-wider">📅 برنامه‌ریز انتخاب واحد</h1>
       </header>
       <div className="grid items-start gap-5 lg:grid-cols-[280px_minmax(0,1fr)_270px]">
       {/* ستون راست: درس‌ها */}
-      <section aria-label="دروس" className="order-1 flex flex-col gap-3 rounded-2xl border border-border/80 bg-card/50 p-3.5 shadow-xs">
-        <div className="flex flex-wrap items-center gap-2">
-          <h2 className="text-sm font-extrabold tracking-tight">درس‌های من</h2>
+      <section aria-label="دروس" className="order-1 flex flex-col gap-3 rounded-sm border-2 border-foreground bg-card p-3.5 shadow-[4px_4px_0_var(--color-foreground)]">
+        <div className="flex flex-wrap items-center gap-2 border-b-2 border-foreground pb-2">
+          <h2 className="text-sm font-black tracking-wide">درس‌های من</h2>
           <span className="flex-1" />
           <Button size="xs" onClick={() => setFormOpen('new')}>
             <Plus /> درس
@@ -116,15 +116,15 @@ export default function DashboardPage() {
       {/* ستون وسط: جدول هفتگی */}
       <section aria-label="جدول هفتگی" className="order-2 min-w-0">
         <div className="mb-3 flex flex-wrap items-center gap-2">
-          <h2 className="text-sm font-extrabold tracking-tight">جدول هفتگی</h2>
+          <h2 className="text-sm font-black tracking-wide">جدول هفتگی</h2>
         </div>
         <TimetableGrid courses={courses} selection={selection} />
       </section>
 
       {/* ستون چپ: وضعیت + پیشنهاد + تنظیمات */}
-      <aside aria-label="وضعیت" className="order-3 flex flex-col gap-3 rounded-2xl border border-border/80 bg-card/50 p-3.5 shadow-xs">
-        <div className="flex flex-wrap items-center gap-2">
-          <h2 className="text-sm font-extrabold tracking-tight">وضعیت</h2>
+      <aside aria-label="وضعیت" className="order-3 flex flex-col gap-3 rounded-sm border-2 border-foreground bg-card p-3.5 shadow-[4px_4px_0_var(--color-foreground)]">
+        <div className="flex flex-wrap items-center gap-2 border-b-2 border-foreground pb-2">
+          <h2 className="text-sm font-black tracking-wide">وضعیت</h2>
         </div>
         {/* محتوای ستون داخل باکس اسکرول‌شونده؛ سقف ارتفاع = پایین جدول تا باکس اخطارها از آن پایین‌تر نرود */}
         <div dir="ltr" className="min-h-0 overflow-y-auto pe-1 lg:max-h-[calc(clamp(340px,100dvh_-_300px,620px)_+_26px)] lg:[scrollbar-gutter:stable]">
@@ -136,10 +136,10 @@ export default function DashboardPage() {
           onApply={applyPicks}
         />
 
-        <div className="rounded-xl border border-border bg-card p-4">
+        <div className="rounded-sm border-2 border-foreground bg-card p-4 shadow-[3px_3px_0_var(--color-foreground)]">
           <div className="mb-3 flex items-center gap-2">
             <Settings2 size={15} className="text-muted-foreground" />
-            <h3 className="text-sm font-bold">تنظیمات</h3>
+            <h3 className="text-sm font-black">تنظیمات</h3>
             <Button
               variant="ghost"
               size="xs"
@@ -246,12 +246,14 @@ function CourseCard({
   return (
     <Card
       className={cn(
-        'group relative gap-3 overflow-hidden py-3.5 transition-shadow',
-        selected ? 'border-primary/50 shadow-md ring-1 ring-primary/20' : undefined,
+        'group relative gap-3 overflow-hidden py-3.5 transition-all',
+        selected
+          ? 'border-primary shadow-[4px_4px_0_var(--color-primary)] -translate-x-[2px] -translate-y-[2px]'
+          : 'shadow-[4px_4px_0_var(--color-foreground)]',
       )}
     >
       {/* نوار رنگی سمت راست کارت */}
-      <span aria-hidden className={cn('absolute inset-y-0 start-0 w-1.5 rounded-s-xl', colorBg)} />
+      <span aria-hidden className={cn('absolute inset-y-0 start-0 w-2 rounded-none', colorBg)} />
       <CardContent className="ps-4 pe-3">
         {/* بخش مجزا برای نام درس تا کامل نمایش داده شود */}
         <div className="flex items-start gap-2.5">
@@ -319,7 +321,7 @@ function CourseCard({
           <button
             type="button"
             onClick={() => setGroupPickerOpen((v) => !v)}
-            className="mt-2 w-full rounded-lg border border-dashed border-border px-2 py-1 text-xs text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+            className="mt-2 w-full rounded-sm border-2 border-dashed border-foreground px-2 py-1 text-xs font-bold text-muted-foreground hover:bg-secondary hover:text-foreground"
           >
             تغییر گروه…
           </button>
@@ -352,16 +354,16 @@ function UnitsPanel({ units, min, max }: { units: number; min: number; max: numb
   const overMax = units > max
   const underMin = units > 0 && units < min
   return (
-    <div className="rounded-xl border border-border bg-card p-4">
-      <p className="text-xs font-medium text-muted-foreground">واحدهای انتخاب‌شده</p>
-      <p className="mt-0.5 text-3xl font-extrabold tracking-tight">
+    <div className="rounded-sm border-2 border-foreground bg-primary/10 p-4 shadow-[3px_3px_0_var(--color-foreground)]">
+      <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">واحدهای انتخاب‌شده</p>
+      <p className="mt-0.5 text-3xl font-black tracking-tight">
         {units}
-        <span className="text-base font-semibold text-muted-foreground"> / {max}</span>
+        <span className="text-base font-bold text-muted-foreground"> / {max}</span>
       </p>
-      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
+      <div className="mt-2 h-3 overflow-hidden rounded-none border-2 border-foreground bg-muted">
         <div
           className={cn(
-            'h-full rounded-full transition-all duration-300',
+            'h-full rounded-none transition-all duration-300',
             overMax ? 'bg-destructive' : underMin ? 'bg-warning' : 'bg-success',
           )}
           style={{ width: `${Math.min(100, (units / Math.max(1, max)) * 100)}%` }}
@@ -394,10 +396,10 @@ function SuggestionsMiniPanel({
   }, [ran, courses, settings, coursesCount])
 
   return (
-    <div className="rounded-xl border border-border bg-card p-4">
+    <div className="rounded-sm border-2 border-foreground bg-card p-4 shadow-[3px_3px_0_var(--color-foreground)]">
       <div className="mb-2 flex items-center gap-2">
         <Lightbulb size={15} className="text-saffron" />
-        <h3 className="text-sm font-bold">پیشنهاد هوشمند</h3>
+        <h3 className="text-sm font-black">پیشنهاد هوشمند</h3>
       </div>
       {coursesCount === 0 ? (
         <p className="text-xs text-muted-foreground">اول چند درس اضافه کنید.</p>
@@ -423,8 +425,8 @@ function SuggestionsMiniPanel({
               <div
                 key={i}
                 className={cn(
-                  'relative overflow-hidden rounded-lg border p-2.5',
-                  best ? 'border-saffron bg-saffron-soft' : 'border-border',
+                  'relative overflow-hidden rounded-sm border-2 p-2.5',
+                  best ? 'border-foreground bg-primary text-primary-foreground shadow-[3px_3px_0_var(--color-foreground)]' : 'border-foreground bg-card shadow-[2px_2px_0_var(--color-foreground)]',
                 )}
               >
                 <div className="flex items-center gap-1.5">

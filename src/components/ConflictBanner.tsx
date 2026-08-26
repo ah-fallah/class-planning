@@ -17,7 +17,7 @@ export default function ConflictBanner({ conflicts, units, settings }: Props) {
   if (conflicts.length === 0 && !overMax && !underMin) {
     if (units === 0) return null
     return (
-      <div className="flex items-start gap-2.5 rounded-xl border border-success/30 bg-success/10 px-3.5 py-3 text-sm text-foreground">
+      <div className="flex items-start gap-2.5 rounded-sm border-2 border-success bg-success/15 px-3.5 py-3 text-sm text-foreground shadow-[3px_3px_0_var(--color-success)]">
         <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-success" />
         <span>انتخاب فعلی بدون تداخل است و مجموع واحدها ({units}) در محدوده مجاز است.</span>
       </div>
@@ -25,7 +25,7 @@ export default function ConflictBanner({ conflicts, units, settings }: Props) {
   }
 
   return (
-    <div className="rounded-xl border border-border bg-card p-3">
+    <div className="rounded-sm border-2 border-foreground bg-card p-3 shadow-[3px_3px_0_var(--color-foreground)]">
       <h3 className="mb-2 flex items-center gap-1.5 px-0.5 text-sm font-bold">
         <AlertTriangle size={14} className="text-saffron" />
         خطاها و اخطارها
@@ -77,10 +77,10 @@ function Banner({
 }) {
   const styles =
     tone === 'error'
-      ? 'border-destructive/30 bg-destructive/10'
-      : 'border-warning/40 bg-warning/10'
+      ? 'border-2 border-destructive bg-destructive/10'
+      : 'border-2 border-warning bg-warning/10'
   return (
-    <div className={`flex items-start gap-2 rounded-lg border ${styles} px-3 py-2.5 text-xs`}>
+    <div className={`flex items-start gap-2 rounded-sm ${styles} px-3 py-2.5 text-xs shadow-[2px_2px_0_var(--color-foreground)]`}>
       <span className={tone === 'error' ? 'text-destructive' : 'text-warning'}>{icon}</span>
       <span className="flex-1 leading-relaxed">
         {title && <strong className="font-bold">{title}</strong>}{' '}
