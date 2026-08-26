@@ -62,11 +62,11 @@ export default function DashboardPage() {
   const conflicts = findConflicts(courses, selection)
 
   return (
-    <div className="mx-auto flex w-full max-w-[1400px] flex-col justify-center min-h-[100dvh] px-4 py-6 pb-16 sm:px-6 lg:py-8">
+    <div className="mx-auto flex w-full max-w-[1400px] flex-col lg:justify-center min-h-[100dvh] px-4 py-6 pb-16 sm:px-6 lg:py-8">
       <header className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b-4 border-foreground pb-4 shrink-0">
         <h1 className="text-xl font-black tracking-wider">📅 برنامه‌ریز انتخاب واحد</h1>
       </header>
-      <div className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)_270px] h-[clamp(500px,calc(100dvh_-_200px),800px)]">
+      <div className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)_270px] lg:h-[clamp(500px,calc(100dvh_-_200px),800px)]">
       {/* ستون راست: درس‌ها */}
       <section aria-label="دروس" className="order-1 flex flex-col min-h-0 gap-3 rounded-sm border-2 border-foreground bg-card p-3.5 shadow-[4px_4px_0_var(--color-foreground)]">
         <div className="flex flex-wrap items-center gap-2 border-b-2 border-foreground pb-2 shrink-0">
@@ -81,7 +81,7 @@ export default function DashboardPage() {
         </div>
 
         {/* لیست کارت‌ها در باکس اسکرول‌شونده؛ کل ارتفاع باقی‌مانده رو می‌گیره */}
-        <div dir="ltr" className="flex-1 min-h-0 overflow-y-auto pe-1 lg:[scrollbar-gutter:stable]">
+        <div dir="ltr" className="flex-1 min-h-0 lg:overflow-y-auto pe-1 lg:[scrollbar-gutter:stable]">
           <div dir="rtl" className="flex flex-col gap-3 [&>*]:shrink-0">
         {courses.length === 0 && (
           <Card className="border-[3px] border-dashed">
@@ -126,7 +126,7 @@ export default function DashboardPage() {
           <h2 className="text-sm font-black tracking-wide">وضعیت</h2>
         </div>
         {/* محتوای ستون داخل باکس اسکرول‌شونده */}
-        <div dir="ltr" className="flex-1 min-h-0 overflow-y-auto pe-1 lg:[scrollbar-gutter:stable]">
+        <div dir="ltr" className="flex-1 min-h-0 lg:overflow-y-auto pe-1 lg:[scrollbar-gutter:stable]">
           <div dir="rtl" className="flex flex-col gap-4 [&>*]:shrink-0">
         <UnitsPanel units={units} min={settings.minUnits} max={settings.maxUnits} />
 
