@@ -82,8 +82,8 @@ export default function DashboardPage() {
         </div>
 
         {/* لیست کارت‌ها در باکس اسکرول‌شونده؛ کل ارتفاع باقی‌مانده رو می‌گیره */}
-        <ScrollArea dir="rtl" className="flex-1 min-h-0 pe-2">
-          <div className="flex flex-col gap-3 [&>*]:shrink-0">
+        <ScrollArea dir="ltr" className="flex-1 min-h-0">
+          <div dir="rtl" className="flex flex-col gap-3 [&>*]:shrink-0 pe-2">
         {courses.length === 0 && (
           <Card className="border-[3px] border-dashed">
             <CardContent className="pt-6 text-center text-sm leading-relaxed text-muted-foreground font-bold">
@@ -127,8 +127,8 @@ export default function DashboardPage() {
           <h2 className="text-sm font-black tracking-wide">وضعیت</h2>
         </div>
         {/* محتوای ستون داخل باکس اسکرول‌شونده */}
-        <ScrollArea dir="rtl" className="flex-1 min-h-0 pe-2">
-          <div className="flex flex-col gap-4 [&>*]:shrink-0">
+        <ScrollArea dir="ltr" className="flex-1 min-h-0">
+          <div dir="rtl" className="flex flex-col gap-4 [&>*]:shrink-0 pe-2">
         <UnitsPanel units={units} min={settings.minUnits} max={settings.maxUnits} />
 
         <SuggestionsMiniPanel
