@@ -144,7 +144,7 @@ export async function parseWorkbook(file: File): Promise<ImportResult> {
 
 function splitDays(s: string): DayIndex[] {
   return s
-    .split(/[,،;|\-–\/]/)
+    .split(/[,،;|\-–/]/)
     .map((d) => dayFromName(d))
     .filter((d): d is DayIndex => d !== null)
 }
@@ -156,7 +156,7 @@ function splitDays(s: string): DayIndex[] {
  * (مثل "1405-xx-xx") هنگام نمایش با isoToJalali بدون خطا رد می‌شوند.
  */
 export function normalizeDate(s: string): string | null {
-  const m = enDigits(s.trim()).match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/)
+  const m = enDigits(s.trim()).match(/^(\d{4})[/-](\d{1,2})[/-](\d{1,2})$/)
   if (!m) return null
   const y = +m[1]
   const mo = +m[2]
