@@ -68,7 +68,7 @@ export default function DashboardPage() {
       </header>
       <div className="grid items-start gap-5 lg:grid-cols-[280px_minmax(0,1fr)_270px]">
       {/* ستون راست: درس‌ها */}
-      <section aria-label="دروس" className="order-1 flex flex-col gap-3">
+      <section aria-label="دروس" className="order-1 flex flex-col gap-3 rounded-2xl border border-border/80 bg-card/50 p-3.5 shadow-xs">
         <div className="flex flex-wrap items-center gap-2">
           <h2 className="text-sm font-extrabold tracking-tight">درس‌های من</h2>
           <span className="flex-1" />
@@ -122,7 +122,7 @@ export default function DashboardPage() {
       </section>
 
       {/* ستون چپ: وضعیت + پیشنهاد + تنظیمات */}
-      <aside aria-label="وضعیت" className="order-3 flex flex-col gap-4">
+      <aside aria-label="وضعیت" className="order-3 flex flex-col gap-3 rounded-2xl border border-border/80 bg-card/50 p-3.5 shadow-xs">
         <div className="flex flex-wrap items-center gap-2">
           <h2 className="text-sm font-extrabold tracking-tight">وضعیت</h2>
         </div>
