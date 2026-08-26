@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils'
 import { AlertTriangle, CalendarX, CheckCircle2, XCircle } from 'lucide-react'
 import type { ConflictInfo } from '@/lib/conflicts'
 import type { Settings } from '@/types'
