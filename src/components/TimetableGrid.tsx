@@ -108,6 +108,7 @@ export default function TimetableGrid({
             courseColor={(id) => blockColorFor(courses, id)}
           />
         ))}
+        </div>
       </div>
       </div>
     </div>
