@@ -1,4 +1,5 @@
 import {
+  GraduationCap,
   Lightbulb,
   Pencil,
   Plus,
@@ -227,33 +228,43 @@ function CourseCard({
   onDelete: () => void
 }) {
   const [groupPickerOpen, setGroupPickerOpen] = useState(false)
+  const colorBg = colorClass.split(' ')[0]
   return (
     <Card
       className={cn(
-        'transition-shadow',
+        'group relative gap-3 overflow-hidden py-3.5 transition-shadow',
         selected ? 'border-primary/50 shadow-md ring-1 ring-primary/20' : undefined,
       )}
     >
-      <CardContent className="group pt-4 pb-4">
-        <div className="flex items-start gap-2">
+      {/* نوار رنگی سمت راست کارت */}
+      <span aria-hidden className={cn('absolute inset-y-0 start-0 w-1.5 rounded-s-xl', colorBg)} />
+      <CardContent className="ps-4 pe-3">
+        <div className="flex items-center gap-2.5">
           <Checkbox
             checked={selected}
             onCheckedChange={(v) => onToggle(v === true)}
             aria-label={`انتخاب ${course.name}`}
-            className="mt-0.5 shrink-0"
+            className="shrink-0"
           />
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
-              <strong className="truncate text-sm">{course.name}</strong>
+          <strong className="min-w-0 flex-1 truncate text-sm font-bold">{course.name}</strong>
+          <Badge variant="secondary" className="shrink-0 text-[10px] tabular-nums">
+            {course.units} واحد
+          </Badge>
+          <div
+            title={`اولویت ${course.priority} از ۵`}
+            className="flex shrink-0 items-center gap-0.5"
+            aria-label={`اولویت ${course.priority} از ۵`}
+          >
+            {[5, 4, 3, 2, 1].map((p) => (
               <span
+                key={p}
                 aria-hidden
-                className={cn('size-2.5 shrink-0 rounded-full', colorClass)}
+                className={cn(
+                  'size-1.5 rounded-full',
+                  p <= course.priority ? 'bg-saffron' : 'bg-muted-foreground/25',
+                )}
               />
-            </div>
-            <p className="mt-0.5 text-xs text-muted-foreground">
-              {course.units} واحد · اولویت {course.priority}/۵
-              {course.groups[0]?.instructor ? ` · ${course.groups[0].instructor}` : ''}
-            </p>
+            ))}
           </div>
           <div className="flex shrink-0 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
             <Button variant="ghost" size="icon-xs" aria-label={`ویرایش ${course.name}`} onClick={onEdit}>
@@ -269,6 +280,26 @@ function CourseCard({
               <Trash2 />
             </Button>
           </div>
+        </div>
+
+        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
+          {course.groups[0]?.instructor && (
+            <span className="inline-flex items-center gap-1">
+              <GraduationCap size={12} className="opacity-70" />
+              {course.groups[0].instructor}
+            </span>
+          )}
+          {(selectedGroupId
+            ? course.groups.find((g) => g.id === selectedGroupId)
+            : undefined
+          )?.sessions.map((s, i) => (
+            <span key={i} className="tabular-nums">
+              {DAY_NAMES[s.day]} {minToTime(s.startMin)}–{minToTime(s.endMin)}
+            </span>
+          ))}
+          {!selectedGroupId && course.groups.length > 0 && (
+            <span>{course.groups.length} گروه</span>
+          )}
         </div>
 
         {selected && selectedGroupId && course.groups.length > 1 && (
