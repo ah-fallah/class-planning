@@ -69,8 +69,8 @@ export default function DashboardPage() {
       </header>
       <div className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)_270px] lg:h-[clamp(500px,calc(100dvh_-_200px),800px)]">
       {/* ستون راست: درس‌ها */}
-      <section aria-label="دروس" className="order-1 flex flex-col min-h-0 gap-3 rounded-sm border-2 border-foreground bg-card p-3.5 shadow-[4px_4px_0_var(--color-foreground)]">
-        <div className="flex flex-wrap items-center gap-2 border-b-2 border-foreground pb-2 shrink-0">
+      <section aria-label="دروس" className="order-1 flex flex-col min-h-0 gap-3 rounded-sm border-2 border-foreground bg-card pt-3.5 pb-0 ps-3.5 pe-0 shadow-[4px_4px_0_var(--color-foreground)]">
+        <div className="flex flex-wrap items-center gap-2 border-b-2 border-foreground pb-2 shrink-0 pe-3.5">
           <h2 className="text-sm font-black tracking-wide">درس‌های من</h2>
           <span className="flex-1" />
           <Button size="xs" onClick={() => setFormOpen('new')}>
@@ -83,7 +83,7 @@ export default function DashboardPage() {
 
         {/* لیست کارت‌ها در باکس اسکرول‌شونده؛ کل ارتفاع باقی‌مانده رو می‌گیره */}
         <ScrollArea dir="ltr" className="flex-1 min-h-0">
-          <div dir="rtl" className="flex flex-col gap-3 [&>*]:shrink-0 pe-2">
+          <div dir="rtl" className="flex flex-col gap-3 [&>*]:shrink-0 pe-3.5 pb-3.5">
         {courses.length === 0 && (
           <Card className="border-[3px] border-dashed">
             <CardContent className="pt-6 text-center text-sm leading-relaxed text-muted-foreground font-bold">
@@ -122,13 +122,13 @@ export default function DashboardPage() {
       </section>
 
       {/* ستون چپ: وضعیت + پیشنهاد + تنظیمات */}
-      <aside aria-label="وضعیت" className="order-3 flex flex-col min-h-0 gap-3 rounded-sm border-2 border-foreground bg-card p-3.5 shadow-[4px_4px_0_var(--color-foreground)]">
-        <div className="flex flex-wrap items-center gap-2 border-b-2 border-foreground pb-2 shrink-0">
+      <aside aria-label="وضعیت" className="order-3 flex flex-col min-h-0 gap-3 rounded-sm border-2 border-foreground bg-card pt-3.5 pb-0 ps-3.5 pe-0 shadow-[4px_4px_0_var(--color-foreground)]">
+        <div className="flex flex-wrap items-center gap-2 border-b-2 border-foreground pb-2 shrink-0 pe-3.5">
           <h2 className="text-sm font-black tracking-wide">وضعیت</h2>
         </div>
         {/* محتوای ستون داخل باکس اسکرول‌شونده */}
         <ScrollArea dir="ltr" className="flex-1 min-h-0">
-          <div dir="rtl" className="flex flex-col gap-4 [&>*]:shrink-0 pe-2">
+          <div dir="rtl" className="flex flex-col gap-4 [&>*]:shrink-0 pe-3.5 pb-3.5">
         <UnitsPanel units={units} min={settings.minUnits} max={settings.maxUnits} />
 
         <SuggestionsMiniPanel
