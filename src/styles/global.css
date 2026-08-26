@@ -142,13 +142,16 @@
     width: 8px;
     height: 8px;
   }
+  ::-webkit-scrollbar-button {
+    display: none;
+  }
   ::-webkit-scrollbar-track {
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
     border-radius: 0;
     background: var(--foreground);
-    border: none;
+    border: 1px solid var(--border);
   }
   ::-webkit-scrollbar-thumb:hover {
     background: var(--saffron);
