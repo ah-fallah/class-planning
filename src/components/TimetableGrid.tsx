@@ -72,9 +72,9 @@ export default function TimetableGrid({
   const days = DAY_NAMES.slice(0, 6)
 
   return (
-    <div className="rounded-sm border-2 border-foreground bg-card shadow-[4px_4px_0_var(--color-foreground)]">
+    <div className="rounded-sm border-2 border-foreground bg-card shadow-[4px_4px_0_var(--color-foreground)] flex flex-col flex-1 min-h-0">
       {/* سربرگ روزها */}
-      <div className="grid grid-cols-[52px_repeat(6,minmax(0,1fr))] border-b-2 border-foreground bg-foreground text-background">
+      <div className="shrink-0 grid grid-cols-[52px_repeat(6,minmax(0,1fr))] border-b-2 border-foreground bg-foreground text-background">
         <div />
         {days.map((d) => (
           <div key={d} className="truncate py-2 text-center text-xs font-black tracking-wide">
@@ -82,8 +82,8 @@ export default function TimetableGrid({
           </div>
         ))}
       </div>
-      {/* بدنه — ارتفاع واکنش‌گرا تا کل جدول بدون اسکرول در دید بماند */}
-      <div className="grid h-[clamp(340px,calc(100dvh_-_300px),620px)] grid-cols-[52px_repeat(6,minmax(0,1fr))]">
+      {/* بدنه — ارتفاع 반응‌گرا متناسب با والد */}
+      <div className="flex-1 min-h-0 grid grid-cols-[52px_repeat(6,minmax(0,1fr))]">
         <div className="relative border-e-2 border-foreground">
           {Array.from({ length: END_HOUR - START_HOUR }, (_, i) => i + START_HOUR).map((h) => (
             <span
