@@ -72,19 +72,21 @@ export default function TimetableGrid({
   const days = DAY_NAMES.slice(0, 6)
 
   return (
-    <div className="rounded-sm border-2 border-foreground bg-card shadow-[4px_4px_0_var(--color-foreground)] flex flex-col flex-1 min-h-0">
-      {/* سربرگ روزها */}
-      <div className="shrink-0 grid grid-cols-[52px_repeat(6,minmax(0,1fr))] border-b-2 border-foreground bg-foreground text-background">
-        <div />
-        {days.map((d) => (
-          <div key={d} className="truncate py-2 text-center text-xs font-black tracking-wide">
-            {d}
+    <div className="rounded-sm border-2 border-foreground bg-card shadow-[4px_4px_0_var(--color-foreground)] flex flex-col flex-1 min-h-[400px] lg:min-h-0 overflow-hidden">
+      <div className="overflow-x-auto">
+        <div className="min-w-[600px] flex flex-col h-full">
+          {/* سربرگ روزها */}
+          <div className="shrink-0 grid grid-cols-[52px_repeat(6,minmax(0,1fr))] border-b-2 border-foreground bg-foreground text-background">
+            <div />
+            {days.map((d) => (
+              <div key={d} className="truncate py-2 text-center text-xs font-black tracking-wide">
+                {d}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      {/* بدنه — ارتفاع 반응‌گرا متناسب با والد */}
-      <div className="flex-1 min-h-0 grid grid-cols-[52px_repeat(6,minmax(0,1fr))]">
-        <div className="relative border-e-2 border-foreground">
+          {/* بدنه — ارتفاع 반응‌گرا متناسب با والد */}
+          <div className="flex-1 min-h-[400px] lg:min-h-0 grid grid-cols-[52px_repeat(6,minmax(0,1fr))]">
+            <div className="relative border-e-2 border-foreground">
           {Array.from({ length: END_HOUR - START_HOUR }, (_, i) => i + START_HOUR).map((h) => (
             <span
               key={h}
@@ -106,6 +108,7 @@ export default function TimetableGrid({
             courseColor={(id) => blockColorFor(courses, id)}
           />
         ))}
+      </div>
       </div>
     </div>
   )
