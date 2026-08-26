@@ -82,7 +82,7 @@ export default function DashboardPage() {
 
         {/* لیست کارت‌ها در باکس اسکرول‌شونده؛ ارتفاع = ارتفاع جدول */}
         {/* dir=ltr روی باکس تا اسکرول‌بار در سمت راست بماند؛ محتوای داخل rtl است */}
-        <div dir="ltr" className="min-h-0 overflow-y-auto pe-1 lg:max-h-[calc(clamp(340px,100dvh_-_300px,620px)_+_33px)]">
+        <div dir="ltr" className="min-h-0 overflow-y-auto pe-1 lg:max-h-[calc(clamp(340px,100dvh_-_300px,620px)_+_33px)] lg:[scrollbar-gutter:stable]">
           <div dir="rtl" className="flex flex-col gap-3 [&>*]:shrink-0">
         {courses.length === 0 && (
           <Card className="border-dashed">
@@ -119,9 +119,6 @@ export default function DashboardPage() {
           <h2 className="text-sm font-extrabold tracking-tight">جدول هفتگی</h2>
         </div>
         <TimetableGrid courses={courses} selection={selection} />
-        <div className="mt-3">
-          <ConflictBanner conflicts={conflicts} units={units} settings={settings} />
-        </div>
       </section>
 
       {/* ستون چپ: وضعیت + پیشنهاد + تنظیمات */}
@@ -129,6 +126,9 @@ export default function DashboardPage() {
         <div className="flex flex-wrap items-center gap-2">
           <h2 className="text-sm font-extrabold tracking-tight">وضعیت</h2>
         </div>
+        {/* محتوای ستون داخل باکس اسکرول‌شونده؛ سقف ارتفاع = پایین جدول تا باکس اخطارها از آن پایین‌تر نرود */}
+        <div dir="ltr" className="min-h-0 overflow-y-auto pe-1 lg:max-h-[calc(clamp(340px,100dvh_-_300px,620px)_+_26px)] lg:[scrollbar-gutter:stable]">
+          <div dir="rtl" className="flex flex-col gap-4 [&>*]:shrink-0">
         <UnitsPanel units={units} min={settings.minUnits} max={settings.maxUnits} />
 
         <SuggestionsMiniPanel
@@ -172,6 +172,11 @@ export default function DashboardPage() {
             پاک کردن انتخاب‌ها
           </Button>
         )}
+
+        {/* باکس خطاها و اخطارها */}
+        <ConflictBanner conflicts={conflicts} units={units} settings={settings} />
+          </div>
+        </div>
       </aside>
 
       {/* فرم درس */}
@@ -248,33 +253,15 @@ function CourseCard({
       {/* نوار رنگی سمت راست کارت */}
       <span aria-hidden className={cn('absolute inset-y-0 start-0 w-1.5 rounded-s-xl', colorBg)} />
       <CardContent className="ps-4 pe-3">
-        <div className="flex items-center gap-2.5">
+        {/* بخش مجزا برای نام درس تا کامل نمایش داده شود */}
+        <div className="flex items-start gap-2.5">
           <Checkbox
             checked={selected}
             onCheckedChange={(v) => onToggle(v === true)}
             aria-label={`انتخاب ${course.name}`}
-            className="shrink-0"
+            className="shrink-0 mt-0.5"
           />
-          <strong className="min-w-0 flex-1 truncate text-sm font-bold">{course.name}</strong>
-          <Badge variant="secondary" className="shrink-0 text-[10px] tabular-nums">
-            {course.units} واحد
-          </Badge>
-          <div
-            title={`اولویت ${course.priority} از ۵`}
-            className="flex shrink-0 items-center gap-0.5"
-            aria-label={`اولویت ${course.priority} از ۵`}
-          >
-            {[5, 4, 3, 2, 1].map((p) => (
-              <span
-                key={p}
-                aria-hidden
-                className={cn(
-                  'size-1.5 rounded-full',
-                  p <= course.priority ? 'bg-saffron' : 'bg-muted-foreground/25',
-                )}
-              />
-            ))}
-          </div>
+          <strong className="min-w-0 break-words text-sm font-bold leading-snug">{course.name}</strong>
           <div className="flex shrink-0 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
             <Button variant="ghost" size="icon-xs" aria-label={`ویرایش ${course.name}`} onClick={onEdit}>
               <Pencil />
@@ -291,7 +278,24 @@ function CourseCard({
           </div>
         </div>
 
-        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
+        <div className="mt-1.5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11px] text-muted-foreground">
+          <Badge variant="secondary" className="text-[10px] tabular-nums">
+            {course.units} واحد
+          </Badge>
+          <Badge variant="outline" className="gap-1 border-saffron/40 text-[10px]">
+            {[5, 4, 3, 2, 1].map((p) => (
+              <span
+                key={p}
+                aria-hidden
+                title={`اولویت ${p} از ۵`}
+                className={cn(
+                  'inline-block size-1.5 rounded-full',
+                  p <= course.priority ? 'bg-saffron' : 'bg-muted-foreground/25',
+                )}
+              />
+            ))}
+            اولویت {course.priority}
+          </Badge>
           {course.groups[0]?.instructor && (
             <span className="inline-flex items-center gap-1">
               <GraduationCap size={12} className="opacity-70" />
