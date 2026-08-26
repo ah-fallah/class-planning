@@ -14,6 +14,7 @@ import ConflictBanner from '@/components/ConflictBanner'
 import CourseForm from '@/components/CourseForm'
 import ImportDialog from '@/components/ImportDialog'
 import TimetableGrid from '@/components/TimetableGrid'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -81,8 +82,8 @@ export default function DashboardPage() {
         </div>
 
         {/* لیست کارت‌ها در باکس اسکرول‌شونده؛ کل ارتفاع باقی‌مانده رو می‌گیره */}
-        <div dir="ltr" className="flex-1 min-h-0 lg:overflow-y-auto pe-1 lg:[scrollbar-gutter:stable]">
-          <div dir="rtl" className="flex flex-col gap-3 [&>*]:shrink-0">
+        <ScrollArea dir="rtl" className="flex-1 min-h-0 pe-2">
+          <div className="flex flex-col gap-3 [&>*]:shrink-0">
         {courses.length === 0 && (
           <Card className="border-[3px] border-dashed">
             <CardContent className="pt-6 text-center text-sm leading-relaxed text-muted-foreground font-bold">
@@ -109,7 +110,7 @@ export default function DashboardPage() {
           />
         ))}
           </div>
-        </div>
+        </ScrollArea>
       </section>
 
       {/* ستون وسط: جدول هفتگی */}
@@ -126,8 +127,8 @@ export default function DashboardPage() {
           <h2 className="text-sm font-black tracking-wide">وضعیت</h2>
         </div>
         {/* محتوای ستون داخل باکس اسکرول‌شونده */}
-        <div dir="ltr" className="flex-1 min-h-0 lg:overflow-y-auto pe-1 lg:[scrollbar-gutter:stable]">
-          <div dir="rtl" className="flex flex-col gap-4 [&>*]:shrink-0">
+        <ScrollArea dir="rtl" className="flex-1 min-h-0 pe-2">
+          <div className="flex flex-col gap-4 [&>*]:shrink-0">
         <UnitsPanel units={units} min={settings.minUnits} max={settings.maxUnits} />
 
         <SuggestionsMiniPanel
@@ -175,7 +176,7 @@ export default function DashboardPage() {
         {/* باکس خطاها و اخطارها */}
         <ConflictBanner conflicts={conflicts} units={units} settings={settings} />
           </div>
-        </div>
+        </ScrollArea>
       </aside>
 
       {/* فرم درس */}
