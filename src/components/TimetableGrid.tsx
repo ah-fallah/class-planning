@@ -7,16 +7,14 @@ export const END_HOUR = 20
 const TOTAL_MIN = (END_HOUR - START_HOUR) * 60
 
 export const BLOCK_COLORS = [
-  'bg-sky-700 dark:bg-sky-500',
-  'bg-violet-700 dark:bg-violet-500',
-  'bg-cyan-700 dark:bg-cyan-600',
-  'bg-emerald-700 dark:bg-emerald-600',
-  'bg-orange-700 dark:bg-orange-600',
-  'bg-rose-700 dark:bg-rose-600',
-  'bg-pink-700 dark:bg-pink-600',
-  'bg-indigo-700 dark:bg-indigo-500',
-  'bg-teal-700 dark:bg-teal-600',
-  'bg-lime-700 dark:bg-lime-600',
+  'bg-[#FF5C5C] text-black', // Neon Coral
+  'bg-[#4DEEEA] text-black', // Neon Cyan
+  'bg-[#FFE156] text-black', // Raw Yellow
+  'bg-[#74FF5C] text-black', // Neon Lime
+  'bg-[#FF66D8] text-black', // Hot Pink
+  'bg-[#FF9933] text-black', // Neon Orange
+  'bg-[#9966FF] text-white', // Electric Purple
+  'bg-[#00E5FF] text-black', // Electric Blue
 ]
 
 export function blockColorFor(courses: Course[], courseId: string): string {
@@ -140,10 +138,10 @@ function DayColumn({
             key={`${b.course.id}-${bi}`}
             title={`${b.course.name} — گروه ${b.group.number}`}
             className={cn(
-              'absolute inset-x-0.5 overflow-hidden rounded-none border-2 border-foreground px-1.5 py-0.5 text-[10px] leading-snug text-white shadow-[2px_2px_0_var(--color-foreground)]',
+              'absolute inset-x-0.5 overflow-hidden rounded-none border-2 border-foreground px-1.5 py-0.5 text-[10px] leading-snug shadow-[4px_4px_0_var(--color-foreground)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_var(--color-foreground)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0_var(--color-foreground)] cursor-default',
               courseColor(b.course.id),
               b.conflict &&
-                'outline outline-2 outline-offset-[-2px] outline-destructive',
+                'outline outline-4 outline-offset-[-4px] outline-destructive',
             )}
             style={{
               top: `${Math.max(0, topPct)}%`,
@@ -152,7 +150,7 @@ function DayColumn({
             }}
           >
             <span className="block truncate font-black">{b.course.name}</span>
-            <span className="block truncate opacity-90">
+            <span className="block truncate opacity-90 font-bold">
               گ{b.group.number} {minToTime(b.startMin)}–{minToTime(b.endMin)}
             </span>
           </div>

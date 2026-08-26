@@ -17,9 +17,16 @@ export default function ConflictBanner({ conflicts, units, settings }: Props) {
   if (conflicts.length === 0 && !overMax && !underMin) {
     if (units === 0) return null
     return (
-      <div className="flex items-start gap-2.5 rounded-sm border-2 border-success bg-success/15 px-3.5 py-3 text-sm text-foreground shadow-[3px_3px_0_var(--color-success)]">
-        <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-success" />
-        <span>انتخاب فعلی بدون تداخل است و مجموع واحدها ({units}) در محدوده مجاز است.</span>
+      <div className="relative flex items-start gap-2.5 overflow-hidden rounded-none border-2 border-foreground px-3.5 py-3 text-sm text-foreground shadow-[3px_3px_0_var(--color-foreground)]">
+         <div
+          className="absolute inset-0 opacity-10"
+          style={{
+            background: `repeating-linear-gradient(-45deg, var(--color-success), var(--color-success) 10px, transparent 10px, transparent 20px)`
+          }}
+        />
+        <div className="absolute inset-0 bg-success/10 -z-10" />
+        <CheckCircle2 size={16} className="relative z-10 mt-0.5 shrink-0 text-success" />
+        <span className="relative z-10 font-bold">انتخاب فعلی بدون تداخل است و مجموع واحدها ({units}) در محدوده مجاز است.</span>
       </div>
     )
   }
@@ -75,15 +82,27 @@ function Banner({
   title?: string
   children?: React.ReactNode
 }) {
-  const styles =
-    tone === 'error'
-      ? 'border-2 border-destructive bg-destructive/10'
-      : 'border-2 border-warning bg-warning/10'
+  const isError = tone === 'error'
+  const stripeColor = isError ? 'var(--color-destructive)' : 'var(--color-warning)'
+  const stripeBg = isError ? 'oklch(from var(--color-destructive) l c h / 0.1)' : 'oklch(from var(--color-warning) l c h / 0.1)'
+
   return (
-    <div className={`flex items-start gap-2 rounded-sm ${styles} px-3 py-2.5 text-xs shadow-[2px_2px_0_var(--color-foreground)]`}>
-      <span className={tone === 'error' ? 'text-destructive' : 'text-warning'}>{icon}</span>
-      <span className="flex-1 leading-relaxed">
-        {title && <strong className="font-bold">{title}</strong>}{' '}
+    <div
+      className={cn(
+        "relative flex items-start gap-2 overflow-hidden rounded-none border-2 border-foreground px-3 py-2.5 text-xs shadow-[3px_3px_0_var(--color-foreground)]",
+      )}
+    >
+      <div
+        className="absolute inset-0 opacity-20"
+        style={{
+          background: `repeating-linear-gradient(-45deg, ${stripeColor}, ${stripeColor} 10px, transparent 10px, transparent 20px)`
+        }}
+      />
+      <div className="absolute inset-0" style={{ backgroundColor: stripeBg, zIndex: -1 }} />
+
+      <span className={isError ? 'text-destructive relative z-10' : 'text-warning relative z-10'}>{icon}</span>
+      <span className="flex-1 leading-relaxed relative z-10">
+        {title && <strong className="font-black">{title}</strong>}{' '}
         {children}
       </span>
     </div>

@@ -85,8 +85,8 @@ export default function DashboardPage() {
         <div dir="ltr" className="min-h-0 overflow-y-auto pe-1 lg:max-h-[calc(clamp(340px,100dvh_-_300px,620px)_+_33px)] lg:[scrollbar-gutter:stable]">
           <div dir="rtl" className="flex flex-col gap-3 [&>*]:shrink-0">
         {courses.length === 0 && (
-          <Card className="border-dashed">
-            <CardContent className="pt-6 text-center text-sm leading-relaxed text-muted-foreground">
+          <Card className="border-[3px] border-dashed">
+            <CardContent className="pt-6 text-center text-sm leading-relaxed text-muted-foreground font-bold">
               هنوز درسی ندارید. با دکمه «درس» شروع کنید یا لیست ترم را از اکسل وارد کنید.
             </CardContent>
           </Card>
@@ -321,7 +321,7 @@ function CourseCard({
           <button
             type="button"
             onClick={() => setGroupPickerOpen((v) => !v)}
-            className="mt-2 w-full rounded-sm border-2 border-dashed border-foreground px-2 py-1 text-xs font-bold text-muted-foreground hover:bg-secondary hover:text-foreground"
+            className="mt-2 w-full rounded-sm border-[3px] border-dashed border-foreground px-2 py-1 text-xs font-bold text-muted-foreground hover:bg-secondary hover:text-foreground focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-foreground outline-none transition-colors"
           >
             تغییر گروه…
           </button>

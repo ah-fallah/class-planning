@@ -133,27 +133,29 @@
     font-family: 'Vazirmatn FD', 'Vazirmatn', Tahoma, sans-serif;
   }
 
-  /* اسکرول‌بار مینیمال — نامحسوس تا هنگام هاور */
+  /* اسکرول‌بار خام و نمایان - نئوبروتالیسم */
   * {
-    scrollbar-width: thin;
-    scrollbar-color: transparent transparent;
-  }
-  :hover {
-    scrollbar-color: color-mix(in oklab, var(--muted-foreground) 40%, transparent) transparent;
+    scrollbar-width: auto;
+    scrollbar-color: var(--saffron) var(--background);
   }
   ::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
+    width: 12px;
+    height: 12px;
   }
   ::-webkit-scrollbar-track {
-    background: transparent;
+    background: var(--background);
+    border-left: 2px solid var(--foreground);
+    border-top: 2px solid var(--foreground);
   }
   ::-webkit-scrollbar-thumb {
     border-radius: 0;
-    background: transparent;
+    background: var(--saffron);
+    border-left: 2px solid var(--foreground);
+    border-top: 2px solid var(--foreground);
+    border-right: 2px solid var(--foreground);
+    border-bottom: 2px solid var(--foreground);
   }
-  :hover::-webkit-scrollbar-thumb,
   ::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in oklab, var(--muted-foreground) 35%, transparent);
+    background: color-mix(in oklab, var(--saffron) 80%, black);
   }
 }
