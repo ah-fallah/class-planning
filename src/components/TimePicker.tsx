@@ -1,6 +1,5 @@
 import { Clock } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { faDigits } from '@/lib/jalali'
 import { minToTime } from '@/lib/time'
@@ -41,13 +40,17 @@ export default function TimePicker({ id, value, onChange }: Props) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button type="button" variant="outline" id={id} size="sm" className="w-24 justify-between px-2.5 font-normal">
-          <span>{faDigits(minToTime(value))}</span>
-          <Clock className="size-3.5 opacity-60" />
-        </Button>
+        <button
+          id={id}
+          type="button"
+          className="flex h-9 w-24 items-center justify-between gap-2 rounded-sm border-2 border-foreground bg-background px-3 py-2 text-sm font-bold shadow-[2px_2px_0_var(--color-foreground)] transition-all hover:bg-secondary active:translate-y-[1px] active:shadow-[1px_1px_0_var(--color-foreground)] focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-foreground outline-none"
+        >
+          <span className="tabular-nums">{faDigits(minToTime(value))}</span>
+          <Clock strokeWidth={2.5} size={14} className="opacity-60" />
+        </button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-auto p-2">
-        <div ref={listRef} className="grid max-h-64 grid-cols-4 gap-1 overflow-y-auto">
+      <PopoverContent align="start" className="w-auto p-0 rounded-none border-[3px] border-foreground shadow-[6px_6px_0_var(--color-foreground)]">
+        <div ref={listRef} className="grid max-h-64 grid-cols-4 gap-[2px] overflow-y-auto bg-foreground border-b-2 border-foreground" dir="ltr">
           {SLOTS.map((min) => {
             const selected = min === value
             return (
@@ -60,8 +63,8 @@ export default function TimePicker({ id, value, onChange }: Props) {
                   setOpen(false)
                 }}
                 className={cn(
-                  'rounded-md px-2 py-1.5 text-[12px] transition-colors',
-                  selected ? 'bg-primary font-semibold text-primary-foreground' : 'hover:bg-accent',
+                  'px-2 py-2 text-[12px] font-black tabular-nums transition-all outline-none bg-background hover:bg-saffron focus-visible:bg-saffron focus-visible:z-10',
+                  selected && 'bg-primary text-primary-foreground shadow-inner',
                 )}
               >
                 {faDigits(minToTime(min))}
