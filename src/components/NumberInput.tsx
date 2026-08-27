@@ -42,7 +42,7 @@ export function NumberInput({
         tabIndex={-1}
         onClick={handleDecrement}
         disabled={value <= min}
-        className="flex shrink-0 aspect-square h-full items-center justify-center border-2 border-foreground bg-primary/20 transition-all hover:bg-primary active:bg-primary/80 disabled:pointer-events-none disabled:opacity-50"
+        className="flex shrink-0 aspect-square h-full items-center justify-center border-2 border-e-0 border-foreground bg-primary/20 transition-all hover:bg-primary active:bg-primary/80 disabled:pointer-events-none disabled:opacity-50"
       >
         <Minus size={18} strokeWidth={3} className="text-foreground" />
       </button>
@@ -54,7 +54,7 @@ export function NumberInput({
         pattern="[0-9]*"
         value={value}
         onChange={handleChange}
-        className="h-full min-w-0 flex-1 border-y-2 border-foreground bg-background px-2 text-center text-lg font-black outline-none focus-visible:bg-secondary"
+        className="h-full min-w-0 flex-1 border-2 border-foreground bg-background px-2 text-center text-lg font-black outline-none focus-visible:bg-secondary"
       />
 
       <button
@@ -62,7 +62,7 @@ export function NumberInput({
         tabIndex={-1}
         onClick={handleIncrement}
         disabled={value >= max}
-        className="flex shrink-0 aspect-square h-full items-center justify-center border-2 border-foreground bg-primary/20 transition-all hover:bg-primary active:bg-primary/80 disabled:pointer-events-none disabled:opacity-50"
+        className="flex shrink-0 aspect-square h-full items-center justify-center border-2 border-s-0 border-foreground bg-primary/20 transition-all hover:bg-primary active:bg-primary/80 disabled:pointer-events-none disabled:opacity-50"
       >
         <Plus size={18} strokeWidth={3} className="text-foreground" />
       </button>
