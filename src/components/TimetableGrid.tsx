@@ -128,36 +128,41 @@ function DayColumn({
   // مرتب‌سازی بر اساس زمان شروع
   const sortedIndices = blocks.map((_, i) => i).sort((a, b) => blocks[a].startMin - blocks[b].startMin)
 
-  const columns: number[][] = []
+  // پیدا کردن کلاسترهای تداخل
+  const clusters: number[][] = []
+  let currentCluster: number[] = []
+  let clusterEnd = 0
 
-  for (const idx of sortedIndices) {
-    const b = blocks[idx]
-    let placed = false
-
-    for (let i = 0; i < columns.length; i++) {
-      const lastInCol = blocks[columns[i][columns[i].length - 1]]
-      if (lastInCol.endMin <= b.startMin) {
-        columns[i].push(idx)
-        placed = true
-        break
+  for(const idx of sortedIndices) {
+      const b = blocks[idx]
+      if(currentCluster.length === 0 || b.startMin < clusterEnd) {
+          currentCluster.push(idx)
+          clusterEnd = Math.max(clusterEnd, b.endMin)
+      } else {
+          clusters.push(currentCluster)
+          currentCluster = [idx]
+          clusterEnd = b.endMin
       }
-    }
-
-    if (!placed) {
-      columns.push([idx])
-    }
   }
+  if(currentCluster.length > 0) clusters.push(currentCluster)
 
-  const numCols = columns.length
-  if (numCols > 0) {
-    for (let i = 0; i < numCols; i++) {
-      for (const idx of columns[i]) {
-        positions[idx] = {
-          width: 100 / numCols,
-          left: (i * 100) / numCols
-        }
+  for(const cluster of clusters) {
+      const columns: number[][] = []
+      for(const idx of cluster) {
+          const b = blocks[idx]
+          const col = columns.find(col => blocks[col[col.length-1]].endMin <= b.startMin)
+          if(col) col.push(idx)
+          else columns.push([idx])
       }
-    }
+      const numCols = columns.length
+      for(let i=0; i < numCols; i++) {
+          for(const idx of columns[i]) {
+              positions[idx] = {
+                  width: 100 / numCols,
+                  left: (i * 100) / numCols
+              }
+          }
+      }
   }
 
   return (
