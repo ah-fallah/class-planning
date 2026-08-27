@@ -140,7 +140,7 @@ function DayColumn({
             key={`${b.course.id}-${bi}`}
             title={`${b.course.name} — گروه ${b.group.number}`}
             className={cn(
-              'absolute inset-x-0.5 overflow-hidden rounded-none border-2 border-foreground px-1.5 py-0.5 text-[10px] leading-snug shadow-[4px_4px_0_var(--color-foreground)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_var(--color-foreground)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0_var(--color-foreground)] cursor-default',
+              'absolute inset-x-0.5 overflow-hidden rounded-none border-2 border-foreground px-1.5 py-0.5 text-[10px] leading-snug shadow-[4px_4px_0_var(--color-foreground)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_var(--color-foreground)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0_var(--color-foreground)] cursor-default hover:z-10',
               courseColor(b.course.id),
               b.conflict &&
                 'outline outline-4 outline-offset-[-4px] outline-destructive',
