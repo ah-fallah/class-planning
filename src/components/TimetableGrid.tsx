@@ -72,7 +72,7 @@ export default function TimetableGrid({
   const days = DAY_NAMES.slice(0, 6)
 
   return (
-    <div className="rounded-sm border-2 border-foreground bg-card shadow-[4px_4px_0_var(--color-foreground)] flex flex-col flex-1 min-h-[400px] lg:min-h-0 overflow-hidden">
+    <div className="rounded-sm border-2 border-foreground bg-card shadow-[4px_4px_0_var(--color-foreground)] flex flex-col flex-1 min-h-[500px] lg:min-h-0 overflow-hidden">
       <div className="flex flex-col h-full">
         {/* سربرگ روزها */}
         <div className="shrink-0 grid grid-cols-[52px_repeat(6,minmax(0,1fr))] border-b-2 border-foreground bg-foreground text-background">

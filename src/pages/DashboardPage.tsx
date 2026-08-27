@@ -115,9 +115,6 @@ export default function DashboardPage() {
 
       {/* ستون وسط: جدول هفتگی */}
       <section aria-label="جدول هفتگی" className="order-2 min-w-0 flex flex-col min-h-[500px] lg:min-h-0">
-        <div className="mb-3 flex flex-wrap items-center gap-2 shrink-0">
-          <h2 className="text-sm font-black tracking-wide">جدول هفتگی</h2>
-        </div>
         <TimetableGrid courses={courses} selection={selection} />
       </section>
 
