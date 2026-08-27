@@ -169,12 +169,13 @@ export default function DashboardPage() {
               className="w-full rounded-none border-2 border-foreground bg-destructive/10 text-destructive-foreground font-black shadow-[2px_2px_0_var(--color-foreground)] transition-all hover:-translate-y-[1px] hover:bg-destructive hover:text-white hover:shadow-[3px_3px_0_var(--color-foreground)] active:translate-y-[1px] active:shadow-none"
               onClick={() => {
                 if (confirm('همه داده‌ها پاک شوند؟ این عمل قابل بازگشت نیست.')) {
-                useStore.getState().clearAll()
-              }
-            }}
-          >
-            پاک کردن همه داده‌ها
-          </Button>
+                  useStore.getState().clearAll()
+                }
+              }}
+            >
+              پاک کردن همه داده‌ها
+            </Button>
+          </div>
         </div>
 
         {Object.values(selection).some(Boolean) && (
@@ -518,9 +519,10 @@ function SuggestionsMiniPanel({
           {incomplete && (
             <div className="mt-1 border-2 border-foreground bg-warning/20 p-2 shadow-[2px_2px_0_var(--color-foreground)]">
               <p className="flex items-start gap-1.5 text-[11px] font-bold text-foreground">
-              <TriangleAlert size={12} className="mt-0.5 shrink-0" />
-              جستجو ناقص بود؛ ممکن است ترکیب بهتر وجود داشته باشد.
-            </p>
+                <TriangleAlert size={12} className="mt-0.5 shrink-0" />
+                جستجو ناقص بود؛ ممکن است ترکیب بهتر وجود داشته باشد.
+              </p>
+            </div>
           )}
         </div>
       )}

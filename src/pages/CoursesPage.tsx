@@ -1,7 +1,6 @@
-import { BookOpen, Pencil, Plus, Trash2, Upload } from 'lucide-react'
+import { BookOpen, Pencil, Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import CourseForm from '@/components/CourseForm'
-import ImportDialog from '@/components/ImportDialog'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -26,7 +25,6 @@ export default function CoursesPage() {
   const updateCourse = useStore((s) => s.updateCourse)
   const deleteCourse = useStore((s) => s.deleteCourse)
   const [editing, setEditing] = useState<Course | 'new' | null>(null)
-  const [importing, setImporting] = useState(false)
 
   if (editing) {
     return (
@@ -57,16 +55,13 @@ export default function CoursesPage() {
             <Button onClick={() => setEditing('new')}>
               <Plus /> درس جدید
             </Button>
-            <Button variant="outline" onClick={() => setImporting(true)}>
-              <Upload /> وارد کردن از اکسل
-            </Button>
           </div>
 
           {courses.length === 0 ? (
             <EmptyState
               icon={<BookOpen size={36} strokeWidth={1.5} />}
               title="هنوز درسی ثبت نشده"
-              hint="با دکمه «درس جدید» شروع کنید یا لیست ترمتان را از اکسل وارد کنید."
+              hint="با دکمه «درس جدید» شروع کنید."
             />
           ) : (
             <div className="rounded-xl border border-border">
@@ -126,8 +121,6 @@ export default function CoursesPage() {
           )}
         </CardContent>
       </Card>
-
-      {importing && <ImportDialog onClose={() => setImporting(false)} />}
     </>
   )
 }
