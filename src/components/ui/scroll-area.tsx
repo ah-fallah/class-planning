@@ -30,8 +30,8 @@ function ScrollBar({
       orientation={orientation}
       className={cn(
         'flex touch-none transition-colors select-none bg-background border-l-2 border-foreground translate-x-[2px]',
-        orientation === 'vertical' && 'h-full w-3',
-        orientation === 'horizontal' && 'h-3 flex-col',
+        orientation === 'vertical' && 'h-full w-2.5',
+        orientation === 'horizontal' && 'h-2.5 flex-col',
         className
       )}
       {...props}
