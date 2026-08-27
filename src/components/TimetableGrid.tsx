@@ -194,7 +194,7 @@ function DayColumn({
           >
             {b.conflict && (
               <div
-                className="absolute inset-0 opacity-20 pointer-events-none"
+                className="absolute inset-0 opacity-30 pointer-events-none"
                 style={{
                   background: `repeating-linear-gradient(-45deg, var(--color-foreground), var(--color-foreground) 6px, transparent 6px, transparent 12px)`
                 }}
