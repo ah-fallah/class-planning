@@ -133,7 +133,16 @@
     font-family: 'Vazirmatn FD', 'Vazirmatn', Tahoma, sans-serif;
   }
 
-  * {
-    /* غیرفعال کردن اسکرول پیشفرض روی المان‌های خاص اگه نیاز بود می‌تونه اینجا انجام بشه */
+  @keyframes stripe-slide {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: 17px 17px;
+    }
+  }
+
+  .animate-stripes {
+    animation: stripe-slide 2s linear infinite;
   }
 }
