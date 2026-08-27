@@ -29,7 +29,7 @@ function ScrollBar({
       data-slot="scroll-area-scrollbar"
       orientation={orientation}
       className={cn(
-        'flex touch-none transition-colors select-none bg-background border-l-2 border-foreground translate-x-[2px]',
+        'flex touch-none transition-colors select-none bg-background border-l border-foreground',
         orientation === 'vertical' && 'h-full w-[5px]',
         orientation === 'horizontal' && 'h-[5px] flex-col',
         className
