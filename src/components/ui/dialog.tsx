@@ -64,7 +64,7 @@ function DialogContent({
         )}
         {...props}
       >
-        <div className="flex flex-col">
+        <div className="flex flex-col overflow-hidden">
           {children}
         </div>
         {showCloseButton && (
