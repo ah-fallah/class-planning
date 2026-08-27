@@ -89,11 +89,15 @@ export default function DashboardPage() {
         <ScrollArea className="flex-1 min-h-0" type="always">
           <div dir="rtl" className="flex flex-col gap-3 [&>*]:shrink-0 px-3.5 pt-3 pb-3 w-full box-border">
         {courses.length === 0 && (
-          <Card className="border-[3px] border-dashed">
-            <CardContent className="pt-6 text-center text-sm leading-relaxed text-muted-foreground font-bold">
-              هنوز درسی ندارید. با دکمه «درس» شروع کنید یا لیست ترم را از اکسل وارد کنید.
-            </CardContent>
-          </Card>
+          <button
+            onClick={() => setFormOpen('new')}
+            className="group relative flex w-full flex-col items-center justify-center gap-3 overflow-hidden rounded-sm border-[3px] border-dashed border-foreground bg-saffron/10 p-8 text-foreground shadow-[4px_4px_0_var(--color-foreground)] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0_var(--color-foreground)] active:translate-y-1 active:shadow-[0px_0px_0_var(--color-foreground)] outline-none"
+          >
+            <div className="flex h-12 w-12 items-center justify-center rounded-sm border-2 border-foreground bg-saffron shadow-[2px_2px_0_var(--color-foreground)] transition-transform group-hover:scale-110">
+              <Plus size={24} strokeWidth={3} />
+            </div>
+            <span className="text-sm font-black tracking-wide">هنوز درسی ندارید. برای شروع کلیک کنید!</span>
+          </button>
         )}
 
         {courses.map((c) => (
@@ -247,15 +251,16 @@ function CourseCard({
   return (
     <Card
       className={cn(
-        'group relative gap-3 overflow-hidden py-3.5 transition-all',
+        'group relative gap-3 overflow-hidden py-3.5 transition-all hover:-translate-y-1',
         selected
-          ? 'border-primary shadow-[4px_4px_0_var(--color-primary)] -translate-x-[2px] -translate-y-[2px]'
-          : 'shadow-[4px_4px_0_var(--color-foreground)]',
+          ? 'border-foreground shadow-[5px_5px_0_var(--color-foreground)]'
+          : 'shadow-[3px_3px_0_var(--color-foreground)] hover:shadow-[5px_5px_0_var(--color-foreground)]',
       )}
     >
-      {/* نوار رنگی سمت راست کارت */}
-      <span aria-hidden className={cn('absolute inset-y-0 start-0 w-2 rounded-none', colorBg)} />
-      <CardContent className="ps-4 pe-3">
+      {/* نوار رنگی سمت راست کارت - حالا به شکل یک مربع/مهر خشن */}
+      <span aria-hidden className={cn('absolute top-3.5 right-3 size-4 rounded-none border-2 border-foreground shadow-[1px_1px_0_var(--color-foreground)]', colorBg)} />
+
+      <CardContent className="ps-4 pe-9">
         {/* بخش مجزا برای نام درس تا کامل نمایش داده شود */}
         <div className="flex items-start gap-2.5">
           <Checkbox
@@ -264,36 +269,42 @@ function CourseCard({
             aria-label={`انتخاب ${course.name}`}
             className="shrink-0 mt-0.5"
           />
-          <strong className="min-w-0 break-words text-sm font-bold leading-snug">{course.name}</strong>
-          <div className="flex shrink-0 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
-            <Button variant="ghost" size="icon-xs" aria-label={`ویرایش ${course.name}`} onClick={onEdit}>
-              <Pencil />
+          <strong className="min-w-0 break-words text-sm font-black leading-snug tracking-wide">{course.name}</strong>
+          <div className="flex shrink-0 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100 mr-auto -mt-1 gap-1">
+            <Button
+              variant="outline"
+              size="icon-xs"
+              aria-label={`ویرایش ${course.name}`}
+              onClick={onEdit}
+              className="size-6 rounded-none border-2 shadow-[1px_1px_0_var(--color-foreground)] bg-primary/20 hover:bg-primary hover:-translate-y-[1px] hover:shadow-[2px_2px_0_var(--color-foreground)] active:translate-y-0 active:shadow-none"
+            >
+              <Pencil size={12} strokeWidth={2.5} className="text-foreground" />
             </Button>
             <Button
-              variant="ghost"
+              variant="outline"
               size="icon-xs"
               aria-label={`حذف ${course.name}`}
-              className="text-destructive hover:text-destructive"
+              className="size-6 rounded-none border-2 shadow-[1px_1px_0_var(--color-foreground)] bg-destructive/20 hover:bg-destructive hover:-translate-y-[1px] hover:shadow-[2px_2px_0_var(--color-foreground)] active:translate-y-0 active:shadow-none"
               onClick={onDelete}
             >
-              <Trash2 />
+              <Trash2 size={12} strokeWidth={2.5} className="text-destructive-foreground hover:text-foreground" />
             </Button>
           </div>
         </div>
 
-        <div className="mt-1.5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11px] text-muted-foreground">
-          <Badge variant="secondary" className="text-[10px] tabular-nums">
+        <div className="mt-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-[11px] text-muted-foreground font-bold">
+          <Badge variant="secondary" className="text-[10px] tabular-nums rounded-none border border-foreground shadow-[1px_1px_0_var(--color-foreground)]">
             {course.units} واحد
           </Badge>
-          <Badge variant="outline" className="gap-1 border-saffron/40 text-[10px]">
+          <Badge variant="outline" className="gap-1 border-saffron/60 text-[10px] rounded-none shadow-[1px_1px_0_var(--color-foreground)] bg-saffron/10">
             {[5, 4, 3, 2, 1].map((p) => (
               <span
                 key={p}
                 aria-hidden
                 title={`اولویت ${p} از ۵`}
                 className={cn(
-                  'inline-block size-1.5 rounded-full',
-                  p <= course.priority ? 'bg-saffron' : 'bg-muted-foreground/25',
+                  'inline-block size-1.5 rounded-none border border-foreground',
+                  p <= course.priority ? 'bg-saffron' : 'bg-transparent',
                 )}
               />
             ))}
@@ -322,7 +333,7 @@ function CourseCard({
           <button
             type="button"
             onClick={() => setGroupPickerOpen((v) => !v)}
-            className="mt-2 w-full rounded-sm border-[3px] border-dashed border-foreground px-2 py-1 text-xs font-bold text-muted-foreground hover:bg-secondary hover:text-foreground focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-foreground outline-none transition-colors"
+            className="mt-3 w-full rounded-none border-[3px] border-dashed border-foreground bg-secondary/30 px-2 py-1.5 text-xs font-black text-foreground shadow-[2px_2px_0_var(--color-foreground)] hover:bg-secondary hover:-translate-y-0.5 hover:shadow-[3px_3px_0_var(--color-foreground)] active:translate-y-0.5 active:shadow-none focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-foreground outline-none transition-all"
           >
             تغییر گروه…
           </button>
