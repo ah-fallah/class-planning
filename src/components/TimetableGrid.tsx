@@ -204,7 +204,7 @@ function DayColumn({
 
         return (
           <Tooltip key={`${b.course.id}-${bi}`}>
-            <TooltipTrigger asChild>
+            <TooltipTrigger asChild onPointerDown={(e) => e.preventDefault()}>
               <div
                 className={cn(
                   'absolute overflow-hidden rounded-none border-2 border-foreground text-[10px] leading-snug shadow-[2px_2px_0_var(--color-foreground)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[4px_4px_0_var(--color-foreground)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0_var(--color-foreground)] cursor-default hover:z-10 group',
@@ -234,6 +234,9 @@ function DayColumn({
               side="top"
               align="center"
               sideOffset={4}
+              onPointerDownOutside={(e) => {
+                e.preventDefault()
+              }}
               className={cn(
                 "rounded-none border-2 border-foreground px-3 py-2 shadow-[4px_4px_0_var(--color-foreground)] z-50",
                 courseColor(b.course.id).split(' ')[0] // استفاده از همان رنگ بک‌گراند درس برای تولتیپ
