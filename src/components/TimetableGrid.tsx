@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils'
 import type { Course, DayIndex, Group, SelectionMap } from '@/types'
 import { DAY_NAMES, minToTime, sessionsOverlap } from '@/lib/time'
+import { AlertTriangle } from 'lucide-react'
 
 export const START_HOUR = 7
 export const END_HOUR = 20
@@ -181,10 +182,8 @@ function DayColumn({
             key={`${b.course.id}-${bi}`}
             title={`${b.course.name} — گروه ${b.group.number}`}
             className={cn(
-              'absolute overflow-hidden rounded-none border-2 border-foreground px-1.5 py-0.5 text-[10px] leading-snug shadow-[2px_2px_0_var(--color-foreground)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[4px_4px_0_var(--color-foreground)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0_var(--color-foreground)] cursor-default hover:z-10',
+              'absolute overflow-hidden rounded-none border-2 border-foreground text-[10px] leading-snug shadow-[2px_2px_0_var(--color-foreground)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[4px_4px_0_var(--color-foreground)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0_var(--color-foreground)] cursor-default hover:z-10 group',
               courseColor(b.course.id),
-              b.conflict &&
-                'outline outline-4 outline-offset-[-4px] outline-destructive',
             )}
             style={{
               top: `${Math.max(0, topPct)}%`,
@@ -194,10 +193,23 @@ function DayColumn({
               right: `calc(${pos.left}% + 2px)`,
             }}
           >
-            <span className="block truncate font-black">{b.course.name}</span>
-            <span className="block truncate opacity-90 font-bold">
-              گ{b.group.number} {minToTime(b.startMin)}–{minToTime(b.endMin)}
-            </span>
+            {b.conflict && (
+              <div
+                className="absolute inset-0 opacity-20 pointer-events-none"
+                style={{
+                  background: `repeating-linear-gradient(-45deg, var(--color-destructive), var(--color-destructive) 6px, transparent 6px, transparent 12px)`
+                }}
+              />
+            )}
+            <div className="relative z-10 px-1.5 py-0.5 h-full flex flex-col">
+              <span className="block truncate font-black flex items-center gap-1">
+                {b.conflict && <AlertTriangle size={10} strokeWidth={3} className="text-destructive shrink-0" />}
+                <span className="truncate">{b.course.name}</span>
+              </span>
+              <span className="block truncate opacity-90 font-bold">
+                گ{b.group.number} {minToTime(b.startMin)}–{minToTime(b.endMin)}
+              </span>
+            </div>
           </div>
         )
       })}
