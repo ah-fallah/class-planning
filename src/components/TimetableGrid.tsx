@@ -157,8 +157,24 @@ function DayColumn({
       const numCols = columns.length
       for(let i=0; i < numCols; i++) {
           for(const idx of columns[i]) {
+              const b = blocks[idx]
+              let colspan = 1
+              for (let c = i + 1; c < numCols; c++) {
+                  const collisionInCol = columns[c].some(cIdx => {
+                      const other = blocks[cIdx]
+                      return sessionsOverlap(
+                          { day: b.day, startMin: b.startMin, endMin: b.endMin },
+                          { day: other.day, startMin: other.startMin, endMin: other.endMin }
+                      )
+                  })
+                  if (collisionInCol) {
+                      break
+                  }
+                  colspan++
+              }
+
               positions[idx] = {
-                  width: 100 / numCols,
+                  width: (100 / numCols) * colspan,
                   left: (i * 100) / numCols
               }
           }
