@@ -142,12 +142,12 @@ export default function CourseForm({ initial, onSave, onCancel }: Props) {
               <Button
                 type="button"
                 variant="outline"
-                size="sm"
-                className="rounded-none border-2 border-foreground bg-destructive/10 text-destructive-foreground shadow-[2px_2px_0_var(--color-foreground)] transition-all hover:-translate-y-[1px] hover:bg-destructive hover:text-white hover:shadow-[3px_3px_0_var(--color-foreground)] active:translate-y-[1px] active:shadow-[1px_1px_0_var(--color-foreground)]"
+                size="icon-sm"
+                className="rounded-none border-2 border-foreground bg-destructive/10 text-destructive-foreground shadow-[1px_1px_0_var(--color-foreground)] transition-all hover:-translate-y-[1px] hover:bg-destructive hover:text-white hover:shadow-[2px_2px_0_var(--color-foreground)] active:translate-y-[1px] active:shadow-none"
                 onClick={() => setGroups((gs) => gs.filter((x) => x.id !== g.id))}
+                aria-label="حذف گروه"
               >
-                <Trash2 size={14} className="ml-1.5" />
-                حذف گروه
+                <Trash2 size={15} />
               </Button>
             )}
           </div>

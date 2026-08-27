@@ -131,29 +131,44 @@ export default function DashboardPage() {
           onApply={applyPicks}
         />
 
-        <div className="rounded-sm border-2 border-foreground bg-card p-4 shadow-[3px_3px_0_var(--color-foreground)]">
-          <div className="mb-3 flex items-center gap-2">
-            <Settings2 size={15} className="text-muted-foreground" />
-            <h3 className="text-sm font-black">تنظیمات</h3>
+        <div className="rounded-none border-[3px] border-foreground bg-card p-4 shadow-[4px_4px_0_var(--color-foreground)]">
+          <div className="mb-4 flex items-center gap-2 border-b-2 border-foreground pb-2">
+            <div className="flex size-7 items-center justify-center border-2 border-foreground bg-muted shadow-[2px_2px_0_var(--color-foreground)]">
+              <Settings2 size={16} strokeWidth={2.5} className="text-foreground" />
+            </div>
+            <h3 className="text-sm font-black tracking-wide">تنظیمات</h3>
             <Button
-              variant="ghost"
+              variant="outline"
               size="xs"
-              className="ms-auto"
+              className="ms-auto rounded-none border-2 border-foreground shadow-[2px_2px_0_var(--color-foreground)] active:translate-y-[1px] active:shadow-none"
               onClick={() => setSettingsOpen(true)}
             >
               تغییر
             </Button>
           </div>
-          <p className="text-xs leading-relaxed text-muted-foreground">
-            محدوده مجاز واحدها: <strong className="text-foreground">{settings.minUnits}</strong> تا{' '}
-            <strong className="text-foreground">{settings.maxUnits}</strong> واحد.
-          </p>
-          <Button
-            variant="ghost"
-            size="xs"
-            className="mt-1 text-destructive hover:text-destructive"
-            onClick={() => {
-              if (confirm('همه داده‌ها پاک شوند؟ این عمل قابل بازگشت نیست.')) {
+
+          <div className="flex flex-col gap-2">
+            <p className="text-xs font-bold text-muted-foreground">محدوده مجاز واحدها:</p>
+            <div className="flex items-center gap-2">
+              <div className="flex flex-1 items-center justify-between border-2 border-foreground bg-background px-2 py-1 shadow-[2px_2px_0_var(--color-foreground)]">
+                <span className="text-xs font-black text-muted-foreground">حداقل</span>
+                <span className="font-black tabular-nums">{settings.minUnits}</span>
+              </div>
+              <span className="font-black text-foreground">تا</span>
+              <div className="flex flex-1 items-center justify-between border-2 border-foreground bg-background px-2 py-1 shadow-[2px_2px_0_var(--color-foreground)]">
+                <span className="text-xs font-black text-muted-foreground">حداکثر</span>
+                <span className="font-black tabular-nums">{settings.maxUnits}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 border-t-2 border-foreground pt-3">
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full rounded-none border-2 border-foreground bg-destructive/10 text-destructive-foreground font-black shadow-[2px_2px_0_var(--color-foreground)] transition-all hover:-translate-y-[1px] hover:bg-destructive hover:text-white hover:shadow-[3px_3px_0_var(--color-foreground)] active:translate-y-[1px] active:shadow-none"
+              onClick={() => {
+                if (confirm('همه داده‌ها پاک شوند؟ این عمل قابل بازگشت نیست.')) {
                 useStore.getState().clearAll()
               }
             }}
@@ -357,26 +372,45 @@ function UnitsPanel({ units, min, max }: { units: number; min: number; max: numb
   const overMax = units > max
   const underMin = units > 0 && units < min
   return (
-    <div className="rounded-sm border-2 border-foreground bg-primary/10 p-4 shadow-[3px_3px_0_var(--color-foreground)]">
-      <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">واحدهای انتخاب‌شده</p>
-      <p className="mt-0.5 text-3xl font-black tracking-tight">
-        {units}
-        <span className="text-base font-bold text-muted-foreground"> / {max}</span>
-      </p>
-      <div className="mt-2 h-3 overflow-hidden rounded-none border-2 border-foreground bg-muted">
-        <div
-          className={cn(
-            'h-full rounded-none transition-all duration-300',
-            overMax ? 'bg-destructive' : underMin ? 'bg-warning' : 'bg-success',
-          )}
-          style={{ width: `${Math.min(100, (units / Math.max(1, max)) * 100)}%` }}
-        />
+    <div className="relative overflow-hidden rounded-none border-[3px] border-foreground bg-primary/10 p-4 shadow-[4px_4px_0_var(--color-foreground)]">
+      {/* Hatch pattern effect */}
+      <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'repeating-linear-gradient(45deg, var(--color-foreground) 0, var(--color-foreground) 2px, transparent 2px, transparent 8px)' }} />
+
+      <div className="relative z-10">
+        <div className="flex items-center justify-between border-b-2 border-foreground pb-2">
+          <p className="text-xs font-black uppercase tracking-widest text-foreground bg-background px-2 py-0.5 border-2 border-foreground shadow-[2px_2px_0_var(--color-foreground)]">وضعیت واحدها</p>
+        </div>
+        <div className="mt-3 flex items-end gap-2">
+          <p className="text-4xl font-black tracking-tighter tabular-nums drop-shadow-[2px_2px_0_var(--color-muted-foreground)]">
+            {units}
+          </p>
+          <span className="mb-1 text-sm font-bold text-muted-foreground">/ {max} واحد</span>
+        </div>
+
+        <div className="mt-3 relative h-5 rounded-none border-[3px] border-foreground bg-background">
+          <div
+            className={cn(
+              'h-full rounded-none transition-all duration-300 border-r-2 border-foreground',
+              overMax ? 'bg-destructive' : underMin ? 'bg-warning' : 'bg-success',
+            )}
+            style={{ width: `${Math.min(100, (units / Math.max(1, max)) * 100)}%` }}
+          />
+          {/* Target marker */}
+          <div className="absolute top-[-4px] bottom-[-4px] w-1 bg-foreground" style={{ left: `${(min / Math.max(1, max)) * 100}%` }} />
+        </div>
+
+        <div className="mt-2 flex justify-between text-[11px] font-black">
+          <span>۰</span>
+          <span className="text-muted-foreground">حداقل {min}</span>
+          <span>{max}</span>
+        </div>
+
+        {(overMax || (underMin && min > 0)) && (
+          <p className={cn('mt-2 text-xs font-black px-2 py-1 border-2 border-foreground bg-background inline-block shadow-[2px_2px_0_var(--color-foreground)]', overMax ? 'text-destructive' : 'text-warning')}>
+            {overMax ? `از سقف ${max} گذشته!` : `کمتر از حداقل ${min}!`}
+          </p>
+        )}
       </div>
-      {(overMax || (underMin && min > 0)) && (
-        <p className={cn('mt-1.5 text-xs', overMax ? 'text-destructive' : 'text-warning')}>
-          {overMax ? `از سقف ${max} گذشته` : `کمتر از حداقل ${min}`}
-        </p>
-      )}
     </div>
   )
 }
@@ -399,28 +433,38 @@ function SuggestionsMiniPanel({
   }, [ran, courses, settings, coursesCount])
 
   return (
-    <div className="rounded-sm border-2 border-foreground bg-card p-4 shadow-[3px_3px_0_var(--color-foreground)]">
-      <div className="mb-2 flex items-center gap-2">
-        <Lightbulb size={15} className="text-saffron" />
-        <h3 className="text-sm font-black">پیشنهاد هوشمند</h3>
+    <div className="rounded-none border-[3px] border-foreground bg-card p-4 shadow-[4px_4px_0_var(--color-foreground)]">
+      <div className="mb-3 flex items-center gap-2 border-b-2 border-foreground pb-2">
+        <div className="flex size-7 items-center justify-center border-2 border-foreground bg-saffron shadow-[2px_2px_0_var(--color-foreground)]">
+          <Lightbulb size={16} strokeWidth={2.5} className="text-foreground" />
+        </div>
+        <h3 className="text-sm font-black tracking-wide">پیشنهاد هوشمند</h3>
       </div>
+
       {coursesCount === 0 ? (
-        <p className="text-xs text-muted-foreground">اول چند درس اضافه کنید.</p>
+        <div className="border-2 border-dashed border-foreground bg-muted/50 p-3 text-center">
+          <p className="text-xs font-bold text-muted-foreground">اول چند درس اضافه کنید.</p>
+        </div>
       ) : !ran ? (
         <>
-          <p className="text-xs leading-relaxed text-muted-foreground">
+          <p className="text-xs font-bold leading-relaxed text-muted-foreground mb-3">
             بهترین ترکیب بدون تداخل بر اساس اولویت و محدوده واحدها.
           </p>
-          <Button size="xs" className="mt-2 w-full" onClick={() => setRan(true)}>
-            <Sparkles /> محاسبه بهترین ترکیب‌ها
+          <Button
+            className="w-full rounded-none border-2 border-foreground bg-primary text-primary-foreground shadow-[3px_3px_0_var(--color-foreground)] transition-all hover:-translate-y-[1px] hover:shadow-[4px_4px_0_var(--color-foreground)] active:translate-y-[2px] active:shadow-none"
+            onClick={() => setRan(true)}
+          >
+            <Sparkles size={16} className="mr-2" /> محاسبه ترکیب‌ها
           </Button>
         </>
       ) : combos.length === 0 ? (
-        <p className="text-xs leading-relaxed text-destructive">
-          هیچ ترکیب معتبری پیدا نشد؛ محدوده واحدها یا تداخل گروه‌ها را بررسی کنید.
-        </p>
+        <div className="border-2 border-foreground bg-destructive/10 p-3">
+          <p className="text-xs font-bold leading-relaxed text-destructive">
+            هیچ ترکیب معتبری پیدا نشد؛ محدوده واحدها یا تداخل گروه‌ها را بررسی کنید.
+          </p>
+        </div>
       ) : (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           {combos.map((combo, i) => {
             const best = i === 0
             const pickedCourses = courses.filter((c) => combo.picks[c.id])
@@ -428,42 +472,52 @@ function SuggestionsMiniPanel({
               <div
                 key={i}
                 className={cn(
-                  'relative overflow-hidden rounded-sm border-2 p-2.5',
-                  best ? 'border-foreground bg-primary text-primary-foreground shadow-[3px_3px_0_var(--color-foreground)]' : 'border-foreground bg-card shadow-[2px_2px_0_var(--color-foreground)]',
+                  'relative overflow-hidden rounded-none border-[3px] p-3 transition-colors',
+                  best ? 'border-foreground bg-saffron/20 shadow-[4px_4px_0_var(--color-foreground)]' : 'border-foreground bg-card shadow-[2px_2px_0_var(--color-foreground)] hover:bg-muted/30',
                 )}
               >
-                <div className="flex items-center gap-1.5">
-                  {best && <Sparkles size={12} className="shrink-0 text-saffron" />}
-                  <span className="text-xs font-bold">
+                <div className="flex items-center gap-1.5 border-b-2 border-foreground pb-2 mb-2">
+                  {best && <Sparkles size={14} className="shrink-0 text-foreground" strokeWidth={2.5} />}
+                  <span className="text-xs font-black tracking-wide">
                     {best ? 'بهترین پیشنهاد' : `گزینه ${i + 1}`}
                   </span>
-                  <Badge variant="secondary" className="ms-auto text-[10px]">
+                  <Badge variant="secondary" className="ms-auto rounded-none border-2 border-foreground bg-background shadow-[2px_2px_0_var(--color-foreground)] px-2 py-0.5 text-[11px] font-black">
                     {combo.totalUnits} واحد
                   </Badge>
                 </div>
-                <ul className="mt-1 space-y-0.5 ps-3 text-[11px] leading-snug" style={{ listStyleType: 'disc' }}>
+
+                <ul className="space-y-1.5 text-[11px] font-bold">
                   {pickedCourses.slice(0, 6).map((c) => {
                     const g = c.groups.find((g) => g.id === combo.picks[c.id])!
                     return (
-                      <li key={c.id}>
-                        {c.name} — گ{g.number}
+                      <li key={c.id} className="flex items-center gap-2">
+                        <div className="size-1.5 bg-foreground rounded-none" />
+                        <span className="truncate flex-1">{c.name}</span>
+                        <span className="shrink-0 bg-muted px-1 border border-foreground">گ{g.number}</span>
                       </li>
                     )
                   })}
                 </ul>
+
                 <Button
-                  variant={best ? 'default' : 'outline'}
-                  size="xs"
-                  className="mt-2 w-full"
+                  variant="outline"
+                  size="sm"
+                  className={cn(
+                    "mt-3 w-full rounded-none border-2 border-foreground font-black transition-all active:translate-y-[1px] active:shadow-none",
+                    best
+                      ? "bg-primary text-primary-foreground shadow-[3px_3px_0_var(--color-foreground)] hover:-translate-y-[1px] hover:shadow-[4px_4px_0_var(--color-foreground)]"
+                      : "bg-background shadow-[2px_2px_0_var(--color-foreground)] hover:-translate-y-[1px] hover:bg-secondary hover:shadow-[3px_3px_0_var(--color-foreground)]"
+                  )}
                   onClick={() => onApply(combo.picks)}
                 >
-                  اعمال
+                  اعمال این ترکیب
                 </Button>
               </div>
             )
           })}
           {incomplete && (
-            <p className="flex items-start gap-1.5 text-[11px] text-warning">
+            <div className="mt-1 border-2 border-foreground bg-warning/20 p-2 shadow-[2px_2px_0_var(--color-foreground)]">
+              <p className="flex items-start gap-1.5 text-[11px] font-bold text-foreground">
               <TriangleAlert size={12} className="mt-0.5 shrink-0" />
               جستجو ناقص بود؛ ممکن است ترکیب بهتر وجود داشته باشد.
             </p>
