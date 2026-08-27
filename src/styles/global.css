@@ -133,33 +133,7 @@
     font-family: 'Vazirmatn FD', 'Vazirmatn', Tahoma, sans-serif;
   }
 
-  /* اسکرول‌بار خام و نمایان - نئوبروتالیسم */
   * {
-    scrollbar-width: thin;
-    scrollbar-color: var(--foreground) transparent;
-  }
-  ::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
-  }
-  ::-webkit-scrollbar-button {
-    display: none;
-    width: 0;
-    height: 0;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-    border: 2px solid var(--border);
-  }
-  ::-webkit-scrollbar-thumb {
-    border-radius: 0;
-    background: var(--foreground);
-    border: 2px solid var(--background);
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--saffron);
-  }
-  ::-webkit-scrollbar-corner {
-    background: transparent;
+    /* غیرفعال کردن اسکرول پیشفرض روی المان‌های خاص اگه نیاز بود می‌تونه اینجا انجام بشه */
   }
 }
