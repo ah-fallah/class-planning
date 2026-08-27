@@ -8,6 +8,7 @@ import {
   Trash2,
   TriangleAlert,
   Upload,
+  CalendarDays,
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import ConflictBanner from '@/components/ConflictBanner'
@@ -65,7 +66,10 @@ export default function DashboardPage() {
   return (
     <div className="mx-auto flex w-full max-w-[1400px] flex-col lg:justify-center min-h-[100dvh] px-4 py-6 pb-16 sm:px-6 lg:py-8">
       <header className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b-4 border-foreground pb-4 shrink-0">
-        <h1 className="text-xl font-black tracking-wider">📅 برنامه‌ریز انتخاب واحد</h1>
+        <h1 className="flex items-center gap-2 text-xl font-black tracking-wider">
+          <CalendarDays strokeWidth={2.5} size={24} className="text-foreground" />
+          برنامه‌ریز انتخاب واحد
+        </h1>
       </header>
       <div className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)_270px] lg:h-[clamp(500px,calc(100dvh_-_200px),800px)]">
       {/* ستون راست: درس‌ها */}
