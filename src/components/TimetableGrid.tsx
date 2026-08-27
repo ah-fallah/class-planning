@@ -207,7 +207,7 @@ function DayColumn({
             )}
             style={{
               top: `${Math.max(0, topPct)}%`,
-              height: `${heightPct}%`,
+              height: `calc(${heightPct}% - 3px)`,
               minHeight: 24,
               width: `calc(${pos.width}% - 4px)`,
               right: `calc(${pos.left}% + 2px)`,
