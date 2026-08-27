@@ -1,6 +1,11 @@
 import { cn } from '@/lib/utils'
 import type { Course, DayIndex, Group, SelectionMap } from '@/types'
 import { DAY_NAMES, minToTime, sessionsOverlap } from '@/lib/time'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 export const START_HOUR = 7
 export const END_HOUR = 20
@@ -198,39 +203,53 @@ function DayColumn({
         const pos = positions[bi]
 
         return (
-          <div
-            key={`${b.course.id}-${bi}`}
-            title={`${b.course.name} — گروه ${b.group.number}`}
-            className={cn(
-              'absolute overflow-hidden rounded-none border-2 border-foreground text-[10px] leading-snug shadow-[2px_2px_0_var(--color-foreground)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[4px_4px_0_var(--color-foreground)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0_var(--color-foreground)] cursor-default hover:z-10 group',
-              courseColor(b.course.id),
-            )}
-            style={{
-              top: `${Math.max(0, topPct)}%`,
-              height: `calc(${heightPct}% - 3px)`,
-              minHeight: 24,
-              width: `calc(${pos.width}% - 4px)`,
-              right: `calc(${pos.left}% + 2px)`,
-            }}
-          >
-            {b.conflict && (
+          <Tooltip key={`${b.course.id}-${bi}`}>
+            <TooltipTrigger asChild>
               <div
-                className="absolute inset-0 opacity-30 pointer-events-none animate-stripes"
+                className={cn(
+                  'absolute overflow-hidden rounded-none border-2 border-foreground text-[10px] leading-snug shadow-[2px_2px_0_var(--color-foreground)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[4px_4px_0_var(--color-foreground)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0_var(--color-foreground)] cursor-default hover:z-10 group',
+                  courseColor(b.course.id),
+                )}
                 style={{
-                  background: `repeating-linear-gradient(-45deg, var(--color-foreground), var(--color-foreground) 6px, transparent 6px, transparent 12px)`,
-                  backgroundSize: '17px 17px'
+                  top: `${Math.max(0, topPct)}%`,
+                  height: `calc(${heightPct}% - 3px)`,
+                  minHeight: 24,
+                  width: `calc(${pos.width}% - 4px)`,
+                  right: `calc(${pos.left}% + 2px)`,
                 }}
-              />
-            )}
-            <div className="relative z-10 px-1.5 py-0.5 h-full flex flex-col">
-              <span className="block truncate font-black flex items-center gap-1">
-                <span className="truncate">{b.course.name}</span>
-              </span>
-              <span className="block truncate opacity-90 font-bold">
-                گ{b.group.number} {minToTime(b.startMin)}–{minToTime(b.endMin)}
-              </span>
-            </div>
-          </div>
+              >
+                {b.conflict && (
+                  <div
+                    className="absolute inset-0 opacity-30 pointer-events-none animate-stripes"
+                    style={{
+                      background: `repeating-linear-gradient(-45deg, var(--color-foreground), var(--color-foreground) 6px, transparent 6px, transparent 12px)`,
+                      backgroundSize: '17px 17px'
+                    }}
+                  />
+                )}
+                {/* هیچ متنی اینجا نشان داده نمی‌شود، فقط باکس رنگی */}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent
+              side="top"
+              align="center"
+              sideOffset={4}
+              className={cn(
+                "rounded-none border-2 border-foreground px-3 py-2 shadow-[4px_4px_0_var(--color-foreground)] z-50",
+                courseColor(b.course.id).split(' ')[0] // استفاده از همان رنگ بک‌گراند درس برای تولتیپ
+              )}
+            >
+              <div className="flex flex-col gap-1 text-black" dir="rtl">
+                <span className="font-black text-xs">{b.course.name}</span>
+                <span className="opacity-90 font-bold">
+                  گروه {b.group.number} {b.group.instructor && `— ${b.group.instructor}`}
+                </span>
+                <span className="opacity-90">
+                  {minToTime(b.startMin)} تا {minToTime(b.endMin)}
+                </span>
+              </div>
+            </TooltipContent>
+          </Tooltip>
         )
       })}
     </div>
