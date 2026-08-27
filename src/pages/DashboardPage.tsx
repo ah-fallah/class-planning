@@ -7,13 +7,11 @@ import {
   Sparkles,
   Trash2,
   TriangleAlert,
-  Upload,
   CalendarDays,
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import ConflictBanner from '@/components/ConflictBanner'
 import CourseForm from '@/components/CourseForm'
-import ImportDialog from '@/components/ImportDialog'
 import TimetableGrid from '@/components/TimetableGrid'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Badge } from '@/components/ui/badge'
@@ -57,7 +55,6 @@ export default function DashboardPage() {
   const deleteCourse = useStore((s) => s.deleteCourse)
 
   const [formOpen, setFormOpen] = useState<false | 'new' | Course>(false)
-  const [importOpen, setImportOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
 
   const units = totalUnits({ courses, selection })
@@ -80,9 +77,6 @@ export default function DashboardPage() {
           <Button size="xs" onClick={() => setFormOpen('new')}>
             <Plus /> درس
           </Button>
-          <Button size="xs" variant="outline" onClick={() => setImportOpen(true)}>
-            <Upload /> اکسل
-          </Button>
         </div>
 
         {/* لیست کارت‌ها در باکس اسکرول‌شونده؛ کل ارتفاع باقی‌مانده رو می‌گیره */}
@@ -91,7 +85,7 @@ export default function DashboardPage() {
         {courses.length === 0 && (
           <Card className="border-[3px] border-dashed">
             <CardContent className="pt-6 text-center text-sm leading-relaxed text-muted-foreground font-bold">
-              هنوز درسی ندارید. با دکمه «درس» شروع کنید یا لیست ترم را از اکسل وارد کنید.
+              هنوز درسی ندارید. با دکمه «درس» شروع کنید.
             </CardContent>
           </Card>
         )}
@@ -202,9 +196,6 @@ export default function DashboardPage() {
           </DialogContent>
         </Dialog>
       )}
-
-      {/* ایمپورت */}
-      {importOpen && <ImportDialog onClose={() => setImportOpen(false)} />}
 
       {/* تنظیمات */}
       {settingsOpen && (
