@@ -146,3 +146,25 @@
     animation: stripe-slide 2s linear infinite;
   }
 }
+
+/* Custom Neo-Brutalist scrollbar for native elements */
+.neo-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  background-color: var(--background);
+  border-left: 1px solid var(--foreground);
+}
+
+.neo-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--foreground);
+  border: 1px solid var(--foreground);
+}
+
+.neo-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--saffron);
+}
+
+.neo-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--foreground) var(--background);
+}

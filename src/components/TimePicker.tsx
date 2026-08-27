@@ -5,8 +5,6 @@ import { faDigits } from '@/lib/jalali'
 import { minToTime } from '@/lib/time'
 import { cn } from '@/lib/utils'
 
-import { ScrollArea } from '@/components/ui/scroll-area'
-
 interface Props {
   id?: string
   /** دقیقه از نیمه‌شب */
@@ -53,30 +51,28 @@ export default function TimePicker({ id, value, onChange }: Props) {
         </button>
       </PopoverTrigger>
       <PopoverContent align="start" className="w-auto p-0 rounded-none border-[3px] border-foreground shadow-[6px_6px_0_var(--color-foreground)] overflow-hidden">
-        <ScrollArea className="h-64" type="always" dir="rtl" ref={listRef}>
-          <div className="grid grid-cols-4 gap-[2px] bg-foreground border-b-2 border-foreground" dir="ltr">
-            {SLOTS.map((min) => {
-              const selected = min === value
-              return (
-                <button
-                  key={min}
-                  type="button"
-                  data-selected={selected}
-                  onClick={() => {
-                    onChange(min)
-                    setOpen(false)
-                  }}
-                  className={cn(
-                    'px-2 py-2 text-[12px] font-black tabular-nums transition-all outline-none bg-background hover:bg-saffron focus-visible:bg-saffron focus-visible:z-10',
-                    selected && 'bg-primary text-primary-foreground shadow-inner',
-                  )}
-                >
-                  {faDigits(minToTime(min))}
-                </button>
-              )
-            })}
-          </div>
-        </ScrollArea>
+        <div ref={listRef} className="grid h-64 grid-cols-4 gap-[2px] bg-foreground border-b-2 border-foreground neo-scrollbar overflow-y-auto" dir="ltr">
+          {SLOTS.map((min) => {
+            const selected = min === value
+            return (
+              <button
+                key={min}
+                type="button"
+                data-selected={selected}
+                onClick={() => {
+                  onChange(min)
+                  setOpen(false)
+                }}
+                className={cn(
+                  'px-2 py-2 text-[12px] font-black tabular-nums transition-all outline-none bg-background hover:bg-saffron focus-visible:bg-saffron focus-visible:z-10',
+                  selected && 'bg-primary text-primary-foreground shadow-inner',
+                )}
+              >
+                {faDigits(minToTime(min))}
+              </button>
+            )
+          })}
+        </div>
       </PopoverContent>
     </Popover>
   )
