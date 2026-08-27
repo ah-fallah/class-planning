@@ -504,9 +504,9 @@ function SettingsDialog({
           <DialogTitle>تنظیمات انتخاب واحد</DialogTitle>
           <DialogDescription>محدوده مجاز واحدها در این ترم را مشخص کنید.</DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col gap-5 p-6">
-          <div className="flex items-end gap-6">
-            <div className="flex flex-1 flex-col gap-2">
+        <div className="flex flex-col gap-5 p-6 overflow-hidden">
+          <div className="flex flex-col sm:flex-row items-center sm:items-end gap-6 w-full">
+            <div className="flex w-full sm:flex-1 flex-col gap-2">
               <Label htmlFor="dash-min" className="text-xs font-black text-muted-foreground uppercase tracking-wider text-center">حداقل واحد</Label>
               <NumberInput
                 id="dash-min"
@@ -514,10 +514,10 @@ function SettingsDialog({
                 max={maxUnits}
                 value={minUnits}
                 onChange={setMinUnits}
-                className="shadow-[3px_3px_0_var(--color-foreground)]"
+                className="shadow-[3px_3px_0_var(--color-foreground)] w-full"
               />
             </div>
-            <div className="flex flex-1 flex-col gap-2">
+            <div className="flex w-full sm:flex-1 flex-col gap-2">
               <Label htmlFor="dash-max" className="text-xs font-black text-muted-foreground uppercase tracking-wider text-center">حداکثر واحد</Label>
               <NumberInput
                 id="dash-max"
@@ -525,7 +525,7 @@ function SettingsDialog({
                 max={30}
                 value={maxUnits}
                 onChange={setMaxUnits}
-                className="shadow-[3px_3px_0_var(--color-foreground)]"
+                className="shadow-[3px_3px_0_var(--color-foreground)] w-full"
               />
             </div>
           </div>
