@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { NumberInput } from '@/components/NumberInput'
 import {
   Select,
   SelectContent,
@@ -24,7 +25,7 @@ interface Props {
 
 export default function CourseForm({ initial, onSave, onCancel }: Props) {
   const [name, setName] = useState(initial?.name ?? '')
-  const [units, setUnits] = useState(String(initial?.units ?? 3))
+  const [units, setUnits] = useState(initial?.units ?? 3)
   const [priority, setPriority] = useState(initial?.priority ?? 3)
   const [groups, setGroups] = useState<Group[]>(
     initial?.groups.length
@@ -85,7 +86,7 @@ export default function CourseForm({ initial, onSave, onCancel }: Props) {
     onSave({
       id: initial?.id ?? genId('course'),
       name: name.trim(),
-      units: Math.max(0, parseInt(units, 10) || 0),
+      units: Math.max(0, units),
       priority,
       groups: cleanGroups,
     })
@@ -98,9 +99,16 @@ export default function CourseForm({ initial, onSave, onCancel }: Props) {
           <Label htmlFor="course-name">نام درس *</Label>
           <Input id="course-name" value={name} onChange={(e) => setName(e.target.value)} required autoFocus />
         </div>
-        <div className="flex w-24 flex-col gap-1.5">
+        <div className="flex w-32 flex-col gap-1.5">
           <Label htmlFor="course-units">تعداد واحد</Label>
-          <Input id="course-units" type="number" min={0} max={10} value={units} onChange={(e) => setUnits(e.target.value)} />
+          <NumberInput
+            id="course-units"
+            min={0}
+            max={10}
+            value={units}
+            onChange={setUnits}
+            className="h-9 shadow-[2px_2px_0_var(--color-foreground)]"
+          />
         </div>
         <div className="flex w-24 flex-col gap-1.5">
           <Label htmlFor="course-priority">اولویت (۱ تا ۵)</Label>
