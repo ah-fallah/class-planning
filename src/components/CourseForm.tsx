@@ -16,6 +16,7 @@ import TimePicker from '@/components/TimePicker'
 import type { Course, DayIndex, ExamSlot, Group, Session } from '@/types'
 import { DAY_NAMES } from '@/lib/time'
 import { genId } from '@/lib/id'
+import { Trash2 } from 'lucide-react'
 
 interface Props {
   initial?: Course
@@ -140,11 +141,12 @@ export default function CourseForm({ initial, onSave, onCancel }: Props) {
             {groups.length > 1 && (
               <Button
                 type="button"
-                variant="ghost"
+                variant="outline"
                 size="sm"
-                className="text-destructive hover:text-destructive"
+                className="rounded-none border-2 border-foreground bg-destructive/10 text-destructive-foreground shadow-[2px_2px_0_var(--color-foreground)] transition-all hover:-translate-y-[1px] hover:bg-destructive hover:text-white hover:shadow-[3px_3px_0_var(--color-foreground)] active:translate-y-[1px] active:shadow-[1px_1px_0_var(--color-foreground)]"
                 onClick={() => setGroups((gs) => gs.filter((x) => x.id !== g.id))}
               >
+                <Trash2 size={14} className="ml-1.5" />
                 حذف گروه
               </Button>
             )}
@@ -180,12 +182,13 @@ export default function CourseForm({ initial, onSave, onCancel }: Props) {
               {g.sessions.length > 1 && (
                 <Button
                   type="button"
-                  variant="ghost"
+                  variant="outline"
                   size="icon-sm"
+                  className="rounded-none border-2 border-foreground bg-destructive/10 text-destructive-foreground shadow-[1px_1px_0_var(--color-foreground)] transition-all hover:-translate-y-[1px] hover:bg-destructive hover:text-white hover:shadow-[2px_2px_0_var(--color-foreground)] active:translate-y-[1px] active:shadow-none"
                   aria-label="حذف جلسه"
                   onClick={() => updateGroup(g.id, { sessions: g.sessions.filter((_, i) => i !== si) })}
                 >
-                  <X />
+                  <X strokeWidth={2.5} size={14} />
                 </Button>
               )}
             </div>
