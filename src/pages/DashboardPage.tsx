@@ -498,31 +498,34 @@ function SettingsDialog({
   const [maxUnits, setMaxUnits] = useState(String(max))
   return (
     <Dialog open onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="max-w-sm">
+      <DialogContent className="max-w-sm p-0 gap-0">
         <DialogHeader>
-          <DialogTitle>محدودیت واحدها</DialogTitle>
-          <DialogDescription>این محدوده در بررسی انتخاب‌ها و پیشنهادها استفاده می‌شود.</DialogDescription>
+          <DialogTitle>تنظیمات انتخاب واحد</DialogTitle>
+          <DialogDescription>محدوده مجاز واحدها در این ترم را مشخص کنید.</DialogDescription>
         </DialogHeader>
-        <div className="flex items-end gap-3">
-          <div className="flex flex-1 flex-col gap-1.5">
-            <Label htmlFor="dash-min">حداقل واحد</Label>
-            <Input id="dash-min" type="number" min={0} max={24} value={minUnits} onChange={(e) => setMinUnits(e.target.value)} />
-          </div>
-          <div className="flex flex-1 flex-col gap-1.5">
-            <Label htmlFor="dash-max">حداکثر واحد</Label>
-            <Input id="dash-max" type="number" min={1} max={30} value={maxUnits} onChange={(e) => setMaxUnits(e.target.value)} />
+        <div className="flex flex-col gap-5 p-6">
+          <div className="flex items-end gap-4">
+            <div className="flex flex-1 flex-col gap-2">
+              <Label htmlFor="dash-min" className="text-xs font-black text-muted-foreground uppercase tracking-wider">حداقل واحد</Label>
+              <Input id="dash-min" type="number" min={0} max={24} value={minUnits} onChange={(e) => setMinUnits(e.target.value)} className="font-bold text-center text-lg h-12" />
+            </div>
+            <div className="flex flex-1 flex-col gap-2">
+              <Label htmlFor="dash-max" className="text-xs font-black text-muted-foreground uppercase tracking-wider">حداکثر واحد</Label>
+              <Input id="dash-max" type="number" min={1} max={30} value={maxUnits} onChange={(e) => setMaxUnits(e.target.value)} className="font-bold text-center text-lg h-12" />
+            </div>
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>انصراف</Button>
+          <Button variant="outline" onClick={onClose} className="w-full sm:w-auto">انصراف</Button>
           <Button
+            className="w-full sm:w-auto"
             onClick={() => {
               const mn = Math.max(0, parseInt(minUnits, 10) || 0)
               const mx = Math.max(mn + 1, parseInt(maxUnits, 10) || mn + 1)
               onSave({ minUnits: mn, maxUnits: mx })
             }}
           >
-            ذخیره
+            ذخیره تغییرات
           </Button>
         </DialogFooter>
       </DialogContent>
