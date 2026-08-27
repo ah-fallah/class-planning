@@ -32,11 +32,12 @@ export default function TimePicker({ id, value, onChange }: Props) {
 
   useEffect(() => {
     if (!open) return
-    requestAnimationFrame(() => {
+    const id = setTimeout(() => {
       listRef.current
         ?.querySelector('[data-selected="true"]')
         ?.scrollIntoView({ block: 'center' })
-    })
+    }, 50)
+    return () => clearTimeout(id)
   }, [open])
 
   return (
@@ -52,8 +53,8 @@ export default function TimePicker({ id, value, onChange }: Props) {
         </button>
       </PopoverTrigger>
       <PopoverContent align="start" className="w-auto p-0 rounded-none border-[3px] border-foreground shadow-[6px_6px_0_var(--color-foreground)] overflow-hidden">
-        <ScrollArea className="h-64" type="always" dir="rtl">
-          <div ref={listRef} className="grid grid-cols-4 gap-[2px] bg-foreground border-b-2 border-foreground" dir="ltr">
+        <ScrollArea className="h-64" type="always" dir="rtl" ref={listRef}>
+          <div className="grid grid-cols-4 gap-[2px] bg-foreground border-b-2 border-foreground" dir="ltr">
             {SLOTS.map((min) => {
               const selected = min === value
               return (
