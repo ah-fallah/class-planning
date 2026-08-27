@@ -122,6 +122,44 @@ function DayColumn({
   blocks: Block[]
   courseColor: (courseId: string) => string
 }) {
+  // محاسبه گروه‌های همپوشان برای تنظیم عرض و موقعیت
+  const positions = blocks.map(() => ({ width: 100, left: 0 }))
+
+  // مرتب‌سازی بر اساس زمان شروع
+  const sortedIndices = blocks.map((_, i) => i).sort((a, b) => blocks[a].startMin - blocks[b].startMin)
+
+  const columns: number[][] = []
+
+  for (const idx of sortedIndices) {
+    const b = blocks[idx]
+    let placed = false
+
+    for (let i = 0; i < columns.length; i++) {
+      const lastInCol = blocks[columns[i][columns[i].length - 1]]
+      if (lastInCol.endMin <= b.startMin) {
+        columns[i].push(idx)
+        placed = true
+        break
+      }
+    }
+
+    if (!placed) {
+      columns.push([idx])
+    }
+  }
+
+  const numCols = columns.length
+  if (numCols > 0) {
+    for (let i = 0; i < numCols; i++) {
+      for (const idx of columns[i]) {
+        positions[idx] = {
+          width: 100 / numCols,
+          left: (i * 100) / numCols
+        }
+      }
+    }
+  }
+
   return (
     <div className="relative border-e-2 border-foreground last:border-e-0" data-day={day}>
       {Array.from({ length: END_HOUR - START_HOUR + 1 }, (_, i) => (
@@ -135,12 +173,15 @@ function DayColumn({
         const topPct = ((b.startMin - START_HOUR * 60) / TOTAL_MIN) * 100
         const heightPct = ((b.endMin - b.startMin) / TOTAL_MIN) * 100
         if (topPct >= 100 || topPct + heightPct <= 0) return null
+
+        const pos = positions[bi]
+
         return (
           <div
             key={`${b.course.id}-${bi}`}
             title={`${b.course.name} — گروه ${b.group.number}`}
             className={cn(
-              'absolute inset-x-0.5 overflow-hidden rounded-none border-2 border-foreground px-1.5 py-0.5 text-[10px] leading-snug shadow-[4px_4px_0_var(--color-foreground)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_var(--color-foreground)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0_var(--color-foreground)] cursor-default hover:z-10',
+              'absolute overflow-hidden rounded-none border-2 border-foreground px-1.5 py-0.5 text-[10px] leading-snug shadow-[2px_2px_0_var(--color-foreground)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[4px_4px_0_var(--color-foreground)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0_var(--color-foreground)] cursor-default hover:z-10',
               courseColor(b.course.id),
               b.conflict &&
                 'outline outline-4 outline-offset-[-4px] outline-destructive',
@@ -149,6 +190,8 @@ function DayColumn({
               top: `${Math.max(0, topPct)}%`,
               height: `${heightPct}%`,
               minHeight: 24,
+              width: `calc(${pos.width}% - 4px)`,
+              right: `calc(${pos.left}% + 2px)`,
             }}
           >
             <span className="block truncate font-black">{b.course.name}</span>
