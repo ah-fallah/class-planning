@@ -1,6 +1,5 @@
 import { CalendarDays, ChevronLeft, ChevronRight, X } from 'lucide-react'
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import {
   JALALI_MONTHS,
@@ -63,34 +62,39 @@ export default function JalaliDatePicker({ id, value, onChange }: Props) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button type="button" variant="outline" id={id} className="w-44 justify-between font-normal">
-          <span className={value ? '' : 'text-muted-foreground'}>
+        <button
+          id={id}
+          type="button"
+          className="flex h-9 w-44 items-center justify-between gap-2 rounded-sm border-2 border-foreground bg-background px-3 py-2 text-sm font-bold shadow-[2px_2px_0_var(--color-foreground)] transition-all hover:bg-secondary active:translate-y-[1px] active:shadow-[1px_1px_0_var(--color-foreground)] focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-foreground outline-none"
+        >
+          <span className={value ? '' : 'text-muted-foreground font-medium'}>
             {selected ? `${faDigits(selected.jd)} ${JALALI_MONTHS[selected.jm - 1]} ${faDigits(selected.jy)}` : 'انتخاب تاریخ'}
           </span>
-          <span className="flex items-center gap-0.5">
+          <span className="flex items-center gap-1">
             {value && (
               <X
-                className="size-4 opacity-50 hover:opacity-100"
+                className="size-4 opacity-50 hover:opacity-100 transition-opacity"
+                strokeWidth={3}
                 onClick={(e) => {
                   e.stopPropagation()
                   onChange('')
                 }}
               />
             )}
-            <CalendarDays className="size-4 opacity-60" />
+            <CalendarDays strokeWidth={2.5} size={16} className="opacity-60" />
           </span>
-        </Button>
+        </button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-auto p-3">
+      <PopoverContent align="start" className="w-auto p-0 rounded-none border-[3px] border-foreground shadow-[6px_6px_0_var(--color-foreground)] overflow-hidden bg-background">
         {/* سرصفحه ماه/سال */}
-        <div className="mb-2 flex items-center justify-between">
-          <Button type="button" variant="ghost" size="icon-xs" aria-label="ماه قبل" onClick={() => move(-1)}>
-            <ChevronRight />
-          </Button>
-          <div className="flex items-center gap-1 text-sm font-semibold">
+        <div className="flex items-center justify-between border-b-2 border-foreground bg-saffron/10 px-3 py-2">
+          <button type="button" aria-label="ماه قبل" onClick={() => move(-1)} className="flex size-6 items-center justify-center rounded-none border-2 border-foreground bg-background hover:bg-saffron active:translate-y-[1px] transition-all">
+            <ChevronRight strokeWidth={3} size={14} />
+          </button>
+          <div className="flex items-center gap-1 text-sm font-black tracking-wide">
             <select
               aria-label="ماه"
-              className="rounded-md bg-transparent px-1 py-0.5 hover:bg-accent"
+              className="rounded-none border-2 border-foreground bg-background px-1 py-0.5 hover:bg-saffron outline-none focus-visible:ring-2 focus-visible:ring-foreground"
               value={viewMonth}
               onChange={(e) => setViewMonth(+e.target.value)}
             >
@@ -100,7 +104,7 @@ export default function JalaliDatePicker({ id, value, onChange }: Props) {
             </select>
             <select
               aria-label="سال"
-              className="rounded-md bg-transparent px-1 py-0.5 hover:bg-accent"
+              className="rounded-none border-2 border-foreground bg-background px-1 py-0.5 hover:bg-saffron outline-none focus-visible:ring-2 focus-visible:ring-foreground"
               value={viewYear}
               onChange={(e) => setViewYear(+e.target.value)}
             >
@@ -109,59 +113,60 @@ export default function JalaliDatePicker({ id, value, onChange }: Props) {
               ))}
             </select>
           </div>
-          <Button type="button" variant="ghost" size="icon-xs" aria-label="ماه بعد" onClick={() => move(1)}>
-            <ChevronLeft />
-          </Button>
+          <button type="button" aria-label="ماه بعد" onClick={() => move(1)} className="flex size-6 items-center justify-center rounded-none border-2 border-foreground bg-background hover:bg-saffron active:translate-y-[1px] transition-all">
+            <ChevronLeft strokeWidth={3} size={14} />
+          </button>
         </div>
 
         {/* شبکه روزها */}
-        <table className="w-full border-separate border-spacing-y-0.5 text-center text-[13px]">
-          <thead>
-            <tr className="text-[11px] text-muted-foreground">
-              {WEEKDAY_HEADS.map((h, i) => (
-                <th key={i} className="font-medium pb-1 w-9">{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {Array.from({ length: Math.ceil((firstWeekday + daysInMonth) / 7) }).map((_, row) => (
-              <tr key={row}>
-                {Array.from({ length: 7 }).map((_, col) => {
-                  const cellIdx = row * 7 + col
-                  const jd = cellIdx - firstWeekday + 1
-                  if (jd < 1 || jd > daysInMonth) return <td key={col} />
-                  const isToday = todayJ && todayJ.jy === viewYear && todayJ.jm === viewMonth && todayJ.jd === jd
-                  const isSelected = selected && selected.jy === viewYear && selected.jm === viewMonth && selected.jd === jd
-                  return (
-                    <td key={col}>
-                      <button
-                        type="button"
-                        onClick={() => select(jd)}
-                        className={cn(
-                          'size-8 rounded-md text-center transition-colors',
-                          isSelected
-                            ? 'bg-primary text-primary-foreground font-semibold'
-                            : isToday
-                              ? 'bg-accent font-semibold'
-                              : 'hover:bg-accent',
-                        )}
-                      >
-                        {faDigits(jd)}
-                      </button>
-                    </td>
-                  )
-                })}
+        <div className="p-3">
+          <table className="w-full border-separate border-spacing-y-1 border-spacing-x-1 text-center text-[13px]">
+            <thead>
+              <tr className="text-[11px] text-muted-foreground font-black">
+                {WEEKDAY_HEADS.map((h, i) => (
+                  <th key={i} className="pb-1 w-8">{h}</th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {Array.from({ length: Math.ceil((firstWeekday + daysInMonth) / 7) }).map((_, row) => (
+                <tr key={row}>
+                  {Array.from({ length: 7 }).map((_, col) => {
+                    const cellIdx = row * 7 + col
+                    const jd = cellIdx - firstWeekday + 1
+                    if (jd < 1 || jd > daysInMonth) return <td key={col} />
+                    const isToday = todayJ && todayJ.jy === viewYear && todayJ.jm === viewMonth && todayJ.jd === jd
+                    const isSelected = selected && selected.jy === viewYear && selected.jm === viewMonth && selected.jd === jd
+                    return (
+                      <td key={col}>
+                        <button
+                          type="button"
+                          onClick={() => select(jd)}
+                          className={cn(
+                            'size-8 rounded-none border-2 text-center tabular-nums transition-all outline-none font-bold',
+                            isSelected
+                              ? 'bg-primary border-foreground text-primary-foreground shadow-[2px_2px_0_var(--color-foreground)] translate-x-[-1px] translate-y-[-1px] font-black'
+                              : isToday
+                                ? 'bg-secondary border-foreground border-dashed hover:bg-saffron hover:border-solid'
+                                : 'border-transparent hover:border-foreground hover:bg-secondary/50',
+                          )}
+                        >
+                          {faDigits(jd)}
+                        </button>
+                      </td>
+                    )
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         {/* پانویس */}
-        <div className="mt-2 flex items-center justify-between border-t pt-2">
-          <Button
+        <div className="flex items-center justify-between border-t-2 border-foreground bg-muted/30 px-3 py-2">
+          <button
             type="button"
-            variant="ghost"
-            size="xs"
+            className="rounded-none border-2 border-foreground bg-background px-2 py-1 text-xs font-bold shadow-[2px_2px_0_var(--color-foreground)] transition-all hover:-translate-y-[1px] hover:bg-secondary active:translate-y-0 active:shadow-none"
             onClick={() => {
               const t = todayISO()
               onChange(t)
@@ -172,20 +177,18 @@ export default function JalaliDatePicker({ id, value, onChange }: Props) {
             }}
           >
             امروز
-          </Button>
+          </button>
           {value && (
-            <Button
+            <button
               type="button"
-              variant="ghost"
-              size="xs"
-              className="text-destructive hover:text-destructive"
+              className="rounded-none border-2 border-foreground bg-destructive/10 px-2 py-1 text-xs font-bold text-destructive-foreground shadow-[2px_2px_0_var(--color-foreground)] transition-all hover:-translate-y-[1px] hover:bg-destructive hover:text-white active:translate-y-0 active:shadow-none"
               onClick={() => {
                 onChange('')
                 setOpen(false)
               }}
             >
               حذف تاریخ
-            </Button>
+            </button>
           )}
         </div>
       </PopoverContent>
