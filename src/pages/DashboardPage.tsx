@@ -183,20 +183,22 @@ export default function DashboardPage() {
       {/* فرم درس */}
       {formOpen && (
         <Dialog open onOpenChange={(v) => !v && setFormOpen(false)}>
-          <DialogContent className="max-h-[90dvh] max-w-2xl overflow-y-auto">
+          <DialogContent className="max-h-[90dvh] max-w-2xl overflow-y-auto p-0 gap-0">
             <DialogHeader>
               <DialogTitle>{formOpen === 'new' ? 'افزودن درس جدید' : `ویرایش درس: ${formOpen.name}`}</DialogTitle>
               <DialogDescription>مشخصات درس، گروه‌ها، جلسات و امتحان را وارد کنید.</DialogDescription>
             </DialogHeader>
-            <CourseForm
-              initial={formOpen === 'new' ? undefined : formOpen}
-              onSave={(c) => {
-                if (formOpen === 'new') addCourse(c)
-                else updateCourse(c.id, c)
-                setFormOpen(false)
-              }}
-              onCancel={() => setFormOpen(false)}
-            />
+            <div className="p-6">
+              <CourseForm
+                initial={formOpen === 'new' ? undefined : formOpen}
+                onSave={(c) => {
+                  if (formOpen === 'new') addCourse(c)
+                  else updateCourse(c.id, c)
+                  setFormOpen(false)
+                }}
+                onCancel={() => setFormOpen(false)}
+              />
+            </div>
           </DialogContent>
         </Dialog>
       )}
