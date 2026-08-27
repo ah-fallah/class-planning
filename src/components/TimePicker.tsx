@@ -50,8 +50,19 @@ export default function TimePicker({ id, value, onChange }: Props) {
           <Clock strokeWidth={2.5} size={14} className="opacity-60" />
         </button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-auto p-0 rounded-none border-[3px] border-foreground shadow-[6px_6px_0_var(--color-foreground)] overflow-hidden">
-        <div ref={listRef} className="grid h-64 grid-cols-4 gap-[2px] bg-foreground border-b-2 border-foreground neo-scrollbar overflow-y-auto" dir="ltr">
+      <PopoverContent
+        align="start"
+        className="w-auto p-0 rounded-none border-[3px] border-foreground shadow-[6px_6px_0_var(--color-foreground)] overflow-hidden"
+        onWheelCapture={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        <div
+          ref={listRef}
+          className="grid h-64 grid-cols-4 gap-[2px] bg-foreground border-b-2 border-foreground neo-scrollbar overflow-y-auto overscroll-contain"
+          dir="ltr"
+          onWheel={(e) => e.stopPropagation()}
+        >
           {SLOTS.map((min) => {
             const selected = min === value
             return (
