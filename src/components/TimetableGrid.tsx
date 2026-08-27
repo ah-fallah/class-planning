@@ -1,7 +1,6 @@
 import { cn } from '@/lib/utils'
 import type { Course, DayIndex, Group, SelectionMap } from '@/types'
 import { DAY_NAMES, minToTime, sessionsOverlap } from '@/lib/time'
-import { AlertTriangle } from 'lucide-react'
 
 export const START_HOUR = 7
 export const END_HOUR = 20
@@ -197,13 +196,12 @@ function DayColumn({
               <div
                 className="absolute inset-0 opacity-20 pointer-events-none"
                 style={{
-                  background: `repeating-linear-gradient(-45deg, var(--color-destructive), var(--color-destructive) 6px, transparent 6px, transparent 12px)`
+                  background: `repeating-linear-gradient(-45deg, var(--color-foreground), var(--color-foreground) 6px, transparent 6px, transparent 12px)`
                 }}
               />
             )}
             <div className="relative z-10 px-1.5 py-0.5 h-full flex flex-col">
               <span className="block truncate font-black flex items-center gap-1">
-                {b.conflict && <AlertTriangle size={10} strokeWidth={3} className="text-destructive shrink-0" />}
                 <span className="truncate">{b.course.name}</span>
               </span>
               <span className="block truncate opacity-90 font-bold">
