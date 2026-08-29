@@ -8,10 +8,12 @@ import {
   Trash2,
   TriangleAlert,
   CalendarDays,
+  FileSpreadsheet,
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import ConflictBanner from '@/components/ConflictBanner'
 import CourseForm from '@/components/CourseForm'
+import ImportDialog from '@/components/ImportDialog'
 import TimetableGrid from '@/components/TimetableGrid'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Badge } from '@/components/ui/badge'
@@ -56,6 +58,7 @@ export default function DashboardPage() {
 
   const [formOpen, setFormOpen] = useState<false | 'new' | Course>(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [importOpen, setImportOpen] = useState(false)
 
   const units = totalUnits({ courses, selection })
   const conflicts = findConflicts(courses, selection)
@@ -74,6 +77,9 @@ export default function DashboardPage() {
         <div className="flex flex-wrap items-center gap-2 border-b-2 border-foreground pb-2 shrink-0 px-3.5">
           <h2 className="text-sm font-black tracking-wide">درس‌های من</h2>
           <span className="flex-1" />
+          <Button size="xs" variant="outline" onClick={() => setImportOpen(true)}>
+            <FileSpreadsheet /> اکسل
+          </Button>
           <Button size="xs" onClick={() => setFormOpen('new')}>
             <Plus /> درس
           </Button>
@@ -227,6 +233,9 @@ export default function DashboardPage() {
           onClose={() => setSettingsOpen(false)}
         />
       )}
+
+      {/* ورود از اکسل */}
+      {importOpen && <ImportDialog onClose={() => setImportOpen(false)} />}
       </div>
     </div>
   )

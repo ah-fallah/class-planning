@@ -1,5 +1,4 @@
-import * as XLSX from 'xlsx'
-import type { Course, DayIndex, ExamSlot, Group, Session } from '../types'
+import type { Course, DayIndex, ExamSlot, Session } from '../types'
 import { dayFromName, timeToMin } from './time'
 import { enDigits, isoToJalali, jalaliToISO } from './jalali'
 import { genId } from './id'
@@ -38,10 +37,12 @@ export interface ImportResult {
 
 export async function parseWorkbook(file: File): Promise<ImportResult> {
   const buf = await file.arrayBuffer()
+  // xlsx به‌صورت lazy-load وارد می‌شود تا باندل اولیه سبک بماند
+  const XLSX = await import('xlsx')
   // SheetJS reads raw buffers as Latin-1 unless a BOM is present, which mangles
   // Persian CSV headers. Decode text files explicitly; fall back to raw for
   // legacy binary .xls (BIFF) that isn't valid UTF-8.
-  let wb: XLSX.WorkBook
+  let wb: import('xlsx').WorkBook
   const head = new Uint8Array(buf.slice(0, 2))
   if (head[0] === 0x50 && head[1] === 0x4b) {
     wb = XLSX.read(buf) // zip signature -> xlsx
@@ -114,28 +115,45 @@ export async function parseWorkbook(file: File): Promise<ImportResult> {
     const units = parseInt(col.units ?? '', 10) || 0
     const groupNumber = col.group || '۱'
 
-    const key = `${col.name}||${groupNumber}`
-    const existing = courses.get(key)
+    // ادغام همه ردیف‌های یک درس: گروه‌های مختلف زیر یک Course جمع می‌شوند
+    const existing = courses.get(col.name)
     if (existing) {
-      const g = existing.groups.find((g) => g.number === groupNumber)
+      const g = existing.groups.find((x) => x.number === groupNumber)
       if (g) {
         g.sessions.push(...sessions)
         if (exam) g.exam = exam
+        if (col.instructor && !g.instructor) g.instructor = col.instructor
+      } else {
+        existing.groups.push({
+          id: genId('group'),
+          number: groupNumber,
+          instructor: col.instructor || undefined,
+          sessions,
+          exam,
+        })
       }
+      // اگر ردیف اول واحد نداشت ولی ردیف‌های بعدی داشتند
+      if (!existing.units && units) existing.units = units
       rows.push({ rowNumber, course: { name: existing.name, units: existing.units, priority: existing.priority } })
       return
     }
 
-    const gid = genId('group')
-    const group: Group = { id: gid, number: groupNumber, sessions, exam }
     const course: Course = {
       id: genId('course'),
       name: col.name,
       units,
       priority: 3,
-      groups: [group],
+      groups: [
+        {
+          id: genId('group'),
+          number: groupNumber,
+          instructor: col.instructor || undefined,
+          sessions,
+          exam,
+        },
+      ],
     }
-    courses.set(key, course)
+    courses.set(col.name, course)
     rows.push({ rowNumber, course: { name: course.name, units, priority: course.priority } })
   })
 
