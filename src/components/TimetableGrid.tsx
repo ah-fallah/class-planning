@@ -1,4 +1,3 @@
-import { cn } from '@/lib/utils'
 import type { Course, DayIndex, Group, SelectionMap } from '@/types'
 import { DAY_NAMES, END_HOUR, minToTime, sessionsOverlap, START_HOUR } from '@/lib/time'
 import {
@@ -9,19 +8,33 @@ import {
 
 const TOTAL_MIN = (END_HOUR - START_HOUR) * 60
 
-export const BLOCK_COLORS = [
-  'bg-[#FF5C5C] text-black', // Neon Coral
-  'bg-[#4DEEEA] text-black', // Neon Cyan
-  'bg-[#FFE156] text-black', // Raw Yellow
-  'bg-[#74FF5C] text-black', // Neon Lime
-  'bg-[#FF66D8] text-black', // Hot Pink
-  'bg-[#FF9933] text-black', // Neon Orange
-  'bg-[#9966FF] text-white', // Electric Purple
-  'bg-[#00E5FF] text-black', // Electric Blue
+interface BlockColor {
+  bg: string
+  fg: string
+}
+
+/** پالت پایه Neon-Brutalism — ۸ رنگ برند برای ۸ درس اول */
+const BASE_COLORS: BlockColor[] = [
+  { bg: '#FF5C5C', fg: '#000000' }, // Neon Coral
+  { bg: '#4DEEEA', fg: '#000000' }, // Neon Cyan
+  { bg: '#FFE156', fg: '#000000' }, // Raw Yellow
+  { bg: '#74FF5C', fg: '#000000' }, // Neon Lime
+  { bg: '#FF66D8', fg: '#000000' }, // Hot Pink
+  { bg: '#FF9933', fg: '#000000' }, // Neon Orange
+  { bg: '#9966FF', fg: '#FFFFFF' }, // Electric Purple
+  { bg: '#00E5FF', fg: '#000000' }, // Electric Blue
 ]
 
-export function blockColorFor(courses: Course[], courseId: string): string {
-  return BLOCK_COLORS[Math.max(0, courses.findIndex((c) => c.id === courseId)) % BLOCK_COLORS.length]
+/**
+ * رنگ درس: برای ۸ درس اول از پالت برند، و بعد از آن رنگ با گام زاویه طلایی
+ * (۱۳۷.۵ درجه در چرخه‌ی Hue) تولید می‌شود تا دروس متوالی همیشه متمایزترین
+ * رنگ را بگیرند و برای هر تعداد درس رنگ تکراری نداشته باشیم.
+ */
+export function blockColorFor(courses: Course[], courseId: string): BlockColor {
+  const idx = Math.max(0, courses.findIndex((c) => c.id === courseId))
+  if (idx < BASE_COLORS.length) return BASE_COLORS[idx]
+  const hue = Math.round((idx * 137.508) % 360)
+  return { bg: `hsl(${hue} 85% 68%)`, fg: '#000000' }
 }
 
 interface Block {
@@ -123,7 +136,7 @@ function DayColumn({
 }: {
   day: number
   blocks: Block[]
-  courseColor: (courseId: string) => string
+  courseColor: (courseId: string) => BlockColor
 }) {
   // محاسبه گروه‌های همپوشان برای تنظیم عرض و موقعیت
   const positions = blocks.map(() => ({ width: 100, left: 0 }))
@@ -199,21 +212,21 @@ function DayColumn({
         if (topPct >= 100 || topPct + heightPct <= 0) return null
 
         const pos = positions[bi]
+        const color = courseColor(b.course.id)
 
         return (
           <Tooltip key={`${b.course.id}-${bi}`}>
             <TooltipTrigger asChild onClick={(e) => e.preventDefault()} onPointerDown={(e) => e.preventDefault()}>
               <div
-                className={cn(
-                  'absolute overflow-hidden rounded-none border-2 border-foreground text-[10px] leading-snug shadow-[2px_2px_0_var(--color-foreground)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[4px_4px_0_var(--color-foreground)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0_var(--color-foreground)] cursor-default hover:z-10 group',
-                  courseColor(b.course.id),
-                )}
+                className="absolute overflow-hidden rounded-none border-2 border-foreground text-[10px] leading-snug shadow-[2px_2px_0_var(--color-foreground)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[4px_4px_0_var(--color-foreground)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0_var(--color-foreground)] cursor-default hover:z-10 group"
                 style={{
                   top: `${Math.max(0, topPct)}%`,
                   height: `calc(${heightPct}% - 3px)`,
                   minHeight: 24,
                   width: `calc(${pos.width}% - 4px)`,
                   right: `calc(${pos.left}% + 2px)`,
+                  backgroundColor: color.bg,
+                  color: color.fg,
                 }}
               >
                 {b.conflict && (
@@ -235,12 +248,10 @@ function DayColumn({
               onPointerDownOutside={(e) => {
                 e.preventDefault()
               }}
-              className={cn(
-                "rounded-none border-2 border-foreground px-3 py-2 shadow-[4px_4px_0_var(--color-foreground)] z-50",
-                courseColor(b.course.id).split(' ')[0] // استفاده از همان رنگ بک‌گراند درس برای تولتیپ
-              )}
+              className="rounded-none border-2 border-foreground px-3 py-2 shadow-[4px_4px_0_var(--color-foreground)] z-50"
+              style={{ backgroundColor: color.bg, color: color.fg }}
             >
-              <div className="flex flex-col gap-1 text-black" dir="rtl">
+              <div className="flex flex-col gap-1" dir="rtl">
                 <span className="font-black text-xs">{b.course.name}</span>
                 <span className="opacity-90 font-bold">
                   گروه {b.group.number} {b.group.instructor && `— ${b.group.instructor}`}

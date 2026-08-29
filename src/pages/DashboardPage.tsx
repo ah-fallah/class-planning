@@ -104,7 +104,7 @@ export default function DashboardPage() {
             course={c}
             selected={!!selection[c.id]}
             selectedGroupId={selection[c.id] ?? null}
-            colorClass={blockColorFor(courses, c.id)}
+            colorBg={blockColorFor(courses, c.id).bg}
             onToggle={(checked) =>
               setSelection(c.id, checked ? c.groups[0].id : null)
             }
@@ -267,7 +267,7 @@ function CourseCard({
   course,
   selected,
   selectedGroupId,
-  colorClass,
+  colorBg,
   onToggle,
   onPickGroup,
   onEdit,
@@ -276,14 +276,13 @@ function CourseCard({
   course: Course
   selected: boolean
   selectedGroupId: string | null
-  colorClass: string
+  colorBg: string
   onToggle: (checked: boolean) => void
   onPickGroup: (gid: string) => void
   onEdit: () => void
   onDelete: () => void
 }) {
   const [groupPickerOpen, setGroupPickerOpen] = useState(false)
-  const colorBg = colorClass.split(' ')[0]
   return (
     <Card
       className={cn(
