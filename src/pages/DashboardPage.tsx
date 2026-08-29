@@ -41,7 +41,7 @@ import {
 } from '@/components/ui/select'
 import { findBestCombos } from '@/lib/optimizer'
 import { findConflicts } from '@/lib/conflicts'
-import { blockColorFor } from '@/components/TimetableGrid'
+import { BASE_COLORS, buildCourseColorMap } from '@/components/TimetableGrid'
 import { DAY_NAMES, minToTime } from '@/lib/time'
 import { cn } from '@/lib/utils'
 import { totalUnits, useStore } from '@/store/useStore'
@@ -64,6 +64,7 @@ export default function DashboardPage() {
 
   const units = totalUnits({ courses, selection })
   const conflicts = findConflicts(courses, selection)
+  const colorMap = buildCourseColorMap(courses)
 
   return (
     <div className="mx-auto flex w-full max-w-[1400px] flex-col lg:justify-center min-h-[100dvh] px-4 py-6 pb-16 sm:px-6 lg:py-8">
@@ -104,7 +105,7 @@ export default function DashboardPage() {
             course={c}
             selected={!!selection[c.id]}
             selectedGroupId={selection[c.id] ?? null}
-            colorBg={blockColorFor(courses, c.id).bg}
+            colorBg={colorMap.get(c.id)?.bg ?? BASE_COLORS[0].bg}
             onToggle={(checked) =>
               setSelection(c.id, checked ? c.groups[0].id : null)
             }
