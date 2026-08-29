@@ -293,7 +293,11 @@ function CourseCard({
       )}
     >
       {/* نوار رنگی سمت راست کارت */}
-      <span aria-hidden className={cn('absolute inset-y-0 start-0 w-2 rounded-none', colorBg)} />
+      <span
+        aria-hidden
+        className="absolute inset-y-0 start-0 w-2 rounded-none"
+        style={{ backgroundColor: colorBg }}
+      />
 
       <CardContent className="ps-4 pe-3">
         {/* بخش مجزا برای نام درس تا کامل نمایش داده شود */}
