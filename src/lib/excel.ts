@@ -1,4 +1,4 @@
-import type { Course, DayIndex, ExamSlot, Session } from '../types'
+import type { Course, DayIndex, ExamSlot, Priority, Session } from '../types'
 import { dayFromName, timeToMin } from './time'
 import { enDigits, isoToJalali, jalaliToISO } from './jalali'
 import { genId } from './id'
@@ -26,7 +26,7 @@ function normalizeHeader(h: string): string | null {
 
 export interface ParsedRow {
   rowNumber: number
-  course?: { name: string; units: number; priority: number }
+  course?: { name: string; units: number; priority: Priority }
   error?: string
 }
 
@@ -142,7 +142,7 @@ export async function parseWorkbook(file: File): Promise<ImportResult> {
       id: genId('course'),
       name: col.name,
       units,
-      priority: 3,
+      priority: 'medium',
       groups: [
         {
           id: genId('group'),

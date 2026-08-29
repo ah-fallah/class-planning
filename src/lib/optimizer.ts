@@ -1,5 +1,6 @@
 import type { Course, Session, Settings, SuggestionCombo } from '../types'
 import { sessionsOverlap, examOverlap } from './time'
+import { PRIORITY_WEIGHT } from './priority'
 
 const MAX_NODES = 300_000
 
@@ -12,16 +13,18 @@ export function findBestCombos(
   settings: Settings,
   topK = 5,
 ): [SuggestionCombo[], boolean] {
-  // مرتب‌سازی: اولویت نزولی، تعداد گروه صعودی (fail-first)
+  // مرتب‌سازی: اولویت (بیش‌ترین وزن) نزولی، تعداد گروه صعودی (fail-first)
   const sorted = [...courses].sort((a, b) => {
-    if (b.priority !== a.priority) return b.priority - a.priority
+    const wa = PRIORITY_WEIGHT[a.priority]
+    const wb = PRIORITY_WEIGHT[b.priority]
+    if (wb !== wa) return wb - wa
     return a.groups.length - b.groups.length
   })
 
   // precompute حداکثر اولویت باقیمانده
   const maxRemaining: number[] = new Array(sorted.length + 1).fill(0)
   for (let i = sorted.length - 1; i >= 0; i--) {
-    maxRemaining[i] = maxRemaining[i + 1] + sorted[i].priority
+    maxRemaining[i] = maxRemaining[i + 1] + PRIORITY_WEIGHT[sorted[i].priority]
   }
 
   const results: SuggestionCombo[] = []
@@ -123,7 +126,7 @@ export function findBestCombos(
       }
 
       picks[course.id] = group.id
-      dfs(idx + 1, picks, newUnits, currentScore + course.priority)
+      dfs(idx + 1, picks, newUnits, currentScore + PRIORITY_WEIGHT[course.priority])
 
       // بازگشت
       delete picks[course.id]

@@ -13,8 +13,9 @@ import {
 } from '@/components/ui/select'
 import JalaliDatePicker from '@/components/JalaliDatePicker'
 import TimePicker from '@/components/TimePicker'
-import type { Course, DayIndex, ExamSlot, Group, Session } from '@/types'
+import type { Course, DayIndex, ExamSlot, Group, Priority, Session } from '@/types'
 import { DAY_NAMES } from '@/lib/time'
+import { PRIORITIES, PRIORITY_LABELS } from '@/lib/priority'
 import { genId } from '@/lib/id'
 import { Trash2 } from 'lucide-react'
 
@@ -27,7 +28,7 @@ interface Props {
 export default function CourseForm({ initial, onSave, onCancel }: Props) {
   const [name, setName] = useState(initial?.name ?? '')
   const [units, setUnits] = useState(initial?.units ?? 3)
-  const [priority, setPriority] = useState(initial?.priority ?? 3)
+  const [priority, setPriority] = useState<Priority>(initial?.priority ?? 'medium')
   const [groups, setGroups] = useState<Group[]>(
     initial?.groups.length
       ? initial.groups
@@ -112,14 +113,14 @@ export default function CourseForm({ initial, onSave, onCancel }: Props) {
           />
         </div>
         <div className="flex w-24 flex-col gap-1.5">
-          <Label htmlFor="course-priority">اولویت (۱ تا ۵)</Label>
-          <Select value={String(priority)} onValueChange={(v) => setPriority(+v)}>
+          <Label htmlFor="course-priority">اولویت</Label>
+          <Select value={priority} onValueChange={(v) => setPriority(v as Priority)}>
             <SelectTrigger id="course-priority" className="w-full">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {[1, 2, 3, 4, 5].map((p) => (
-                <SelectItem key={p} value={String(p)}>{p}</SelectItem>
+              {PRIORITIES.map((p) => (
+                <SelectItem key={p} value={p}>{PRIORITY_LABELS[p]}</SelectItem>
               ))}
             </SelectContent>
           </Select>

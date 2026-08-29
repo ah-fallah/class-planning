@@ -41,11 +41,12 @@ import {
 } from '@/components/ui/select'
 import { findBestCombos } from '@/lib/optimizer'
 import { findConflicts } from '@/lib/conflicts'
+import { PRIORITY_LABELS, PRIORITY_WEIGHT } from '@/lib/priority'
 import { BASE_COLORS, buildCourseColorMap } from '@/components/TimetableGrid'
 import { DAY_NAMES, minToTime } from '@/lib/time'
 import { cn } from '@/lib/utils'
 import { totalUnits, useStore } from '@/store/useStore'
-import type { Course } from '@/types'
+import type { Course, Priority } from '@/types'
 
 export default function DashboardPage() {
   const courses = useStore((s) => s.courses)
@@ -337,18 +338,18 @@ function CourseCard({
             {course.units} واحد
           </Badge>
           <Badge variant="outline" className="gap-1 border-saffron/40 text-[10px]">
-            {[5, 4, 3, 2, 1].map((p) => (
+            {(['high', 'medium', 'low'] as Priority[]).map((p) => (
               <span
                 key={p}
                 aria-hidden
-                title={`اولویت ${p} از ۵`}
+                title={`اولویت ${PRIORITY_LABELS[course.priority]}`}
                 className={cn(
                   'inline-block size-1.5 rounded-full',
-                  p <= course.priority ? 'bg-saffron' : 'bg-muted-foreground/25',
+                  PRIORITY_WEIGHT[course.priority] >= PRIORITY_WEIGHT[p] ? 'bg-saffron' : 'bg-muted-foreground/25',
                 )}
               />
             ))}
-            اولویت {course.priority}
+            اولویت {PRIORITY_LABELS[course.priority]}
           </Badge>
           {course.groups[0]?.instructor && (
             <span className="inline-flex items-center gap-1">

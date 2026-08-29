@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { Course, DayIndex, Group, Session, Settings, SelectionMap } from '../types'
+import type { Course, DayIndex, Group, Priority, Session, Settings, SelectionMap } from '../types'
 import { genId } from '../lib/id'
 
 const DEFAULT_SETTINGS: Settings = { minUnits: 12, maxUnits: 20 }
@@ -61,6 +61,17 @@ function sanitizeGroups(raw: unknown): Group[] {
   })
 }
 
+/** تبدیل اولویت ذخیره‌شده (عدد ۱..۵ از نسخه قدیمی یا رشته) به سه سطح کم/متوسط/زیاد */
+function sanitizePriority(raw: unknown): Priority {
+  if (raw === 'low' || raw === 'medium' || raw === 'high') return raw
+  if (typeof raw === 'number' && raw >= 1 && raw <= 5) {
+    if (raw <= 2) return 'low'
+    if (raw >= 4) return 'high'
+    return 'medium'
+  }
+  return 'medium'
+}
+
 function sanitizeCourses(raw: unknown): Course[] {
   if (!Array.isArray(raw)) return []
   return raw.flatMap((c): Course[] => {
@@ -72,7 +83,7 @@ function sanitizeCourses(raw: unknown): Course[] {
         id: typeof co.id === 'string' && co.id ? co.id : genId('course'),
         name: co.name,
         units: typeof co.units === 'number' && co.units >= 0 ? co.units : 0,
-        priority: typeof co.priority === 'number' && co.priority >= 1 && co.priority <= 5 ? co.priority : 3,
+        priority: sanitizePriority(co.priority),
         groups: sanitizeGroups(co.groups),
       },
     ]
@@ -154,7 +165,7 @@ export const useStore = create<AppState>()(
     {
       name: 'class-planning-v1',
       // از این پس هر تغییر ساختار داده = افزایش version + هندل در migrateState
-      version: 1,
+      version: 2,
       migrate: (persisted) => migrateState(persisted),
     },
   ),

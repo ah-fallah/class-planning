@@ -20,11 +20,13 @@ export interface Group {
   exam?: ExamSlot
 }
 
+export type Priority = 'low' | 'medium' | 'high'
+
 export interface Course {
   id: string
   name: string
   units: number
-  priority: number // 1..5 — بالاتر یعنی مهم‌تر
+  priority: Priority // کم | متوسط | زیاد
   groups: Group[]
 }
 
