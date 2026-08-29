@@ -127,7 +127,7 @@ export default function DashboardPage() {
           <Button
             size="xs"
             variant="outline"
-            disabled={!Object.values(selection).some(Boolean)}
+            disabled={courses.length === 0}
             onClick={async () => {
               try {
                 await exportTimetable(courses, selection)

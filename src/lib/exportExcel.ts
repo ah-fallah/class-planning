@@ -18,6 +18,15 @@ function collectPicked(courses: Course[], selection: SelectionMap): Picked[] {
   return picked
 }
 
+/** همه‌ی گروه‌های همه‌ی دروس (برای شیت «دروس» در خروجی) */
+function collectAll(courses: Course[]): Picked[] {
+  const all: Picked[] = []
+  for (const c of courses) {
+    for (const g of c.groups) all.push({ course: c, group: g })
+  }
+  return all
+}
+
 /** تاریخ ISO میلادی -> «1405/10/30» شمسی (فرمت قابل فهم برای normalizeDate هنگام import) */
 function jalaliCell(iso: string): string {
   const j = isoToJalali(iso)
@@ -70,23 +79,24 @@ function buildImportRows(picked: Picked[]): (string | number)[][] {
 }
 
 /**
- * خروجی اکسل برنامه‌ی انتخاب فعلی:
- * شیت ۱ «دروس» با همان فرمت ستون‌های import (قابل import مجدد با همان دکمه‌ی «اکسل»)،
- * شیت ۲ «برنامه هفتگی» (گرید روز × ساعت با ادغام سلول‌های بلوک‌های چندساعته).
+ * خروجی اکسل همه‌ی دروس و گروه‌ها:
+ * شیت ۱ «دروس» با همان فرمت ستون‌های import و شامل «همه‌ی گروه‌های همه‌ی دروس»
+ * (قابل import مجدد با همان دکمه‌ی «اکسل»)،
+ * شیت ۲ «برنامه هفتگی» فقط شامل گروه‌های انتخاب‌شده (گرید روز × ساعت).
  * @returns نام فایل ساخته‌شده
  */
 export async function exportTimetable(courses: Course[], selection: SelectionMap): Promise<string> {
   // xlsx به‌صورت lazy-load وارد می‌شود تا باندل اولیه سبک بماند
   const XLSX = await import('xlsx')
-  const picked = collectPicked(courses, selection)
-  if (picked.length === 0) throw new Error('هیچ درسی انتخاب نشده است')
+  if (courses.length === 0) throw new Error('هیچ درسی ثبت نشده است')
+  const selected = collectPicked(courses, selection)
 
   const wb = XLSX.utils.book_new()
   // راست‌به‌چپ کردن شیت‌ها برای فارسی
   wb.Workbook = { Views: [{ RTL: true }] }
 
-  /* --- شیت ۱: دروس (فرمت سازگار با import) --- */
-  const importRows = buildImportRows(picked)
+  /* --- شیت ۱: دروس (فرمت سازگار با import) — همه‌ی گروه‌ها --- */
+  const importRows = buildImportRows(collectAll(courses))
   const wsList = XLSX.utils.aoa_to_sheet(importRows)
   wsList['!cols'] = [
     { wch: 26 }, { wch: 10 }, { wch: 16 }, { wch: 7 }, { wch: 20 },
@@ -94,8 +104,8 @@ export async function exportTimetable(courses: Course[], selection: SelectionMap
   ]
   XLSX.utils.book_append_sheet(wb, wsList, 'دروس')
 
-  /* --- شیت ۲: برنامه هفتگی --- */
-  const hasFriday = picked.some(({ group }) => group.sessions.some((s) => s.day === 6))
+  /* --- شیت ۲: برنامه هفتگی (فقط گروه‌های انتخاب‌شده) --- */
+  const hasFriday = selected.some(({ group }) => group.sessions.some((s) => s.day === 6))
   const days = DAY_NAMES.slice(0, hasFriday ? 7 : 6)
 
   const grid: (string | undefined)[][] = [['ساعت', ...days]]
@@ -104,7 +114,7 @@ export async function exportTimetable(courses: Course[], selection: SelectionMap
   }
 
   const merges: import('xlsx').Range[] = []
-  for (const { course, group } of picked) {
+  for (const { course, group } of selected) {
     for (const s of group.sessions) {
       if (s.day >= days.length) continue
       const row = Math.max(0, Math.floor(s.startMin / 60) - START_HOUR) + 1
