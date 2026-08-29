@@ -147,6 +147,16 @@
   }
 }
 
+/*
+ * Radix ScrollArea: div داخلی viewport به‌صورت پیش‌فرض display:table دارد که
+ * عرضش بر اساس محتوا تغییر می‌کند (مثلاً موقع تغییر گروه و عوض شدن متن ساعت
+ * کلاس‌ها) و باعث می‌شود عرض کارت‌ها ناجور بزرگ/کوچک شود. با block کردنش،
+ * عرض محتوا همیشه دقیقاً برابر خود viewport می‌ماند.
+ */
+[data-radix-scroll-area-viewport] > div {
+  display: block !important;
+}
+
 /* Custom Neo-Brutalist scrollbar for native elements */
 .neo-scrollbar::-webkit-scrollbar {
   width: 5px;
