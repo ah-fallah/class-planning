@@ -1,10 +1,6 @@
+import { useRef, useState } from 'react'
 import type { Course, DayIndex, Group, SelectionMap } from '@/types'
 import { DAY_NAMES, END_HOUR, minToTime, sessionsOverlap, START_HOUR } from '@/lib/time'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
 
 const TOTAL_MIN = (END_HOUR - START_HOUR) * 60
 
@@ -84,6 +80,13 @@ export default function TimetableGrid({
   courses: Course[]
   selection: SelectionMap
 }) {
+  const [tooltip, setTooltip] = useState<{
+    block: Block
+    x: number
+    y: number
+  } | null>(null)
+  const gridRef = useRef<HTMLDivElement>(null)
+
   const blocks: Block[] = []
   const colorMap = buildCourseColorMap(courses)
   for (const c of courses) {
@@ -119,8 +122,30 @@ export default function TimetableGrid({
 
   const days = DAY_NAMES.slice(0, 6)
 
+  function handleBlockPointerMove(e: React.PointerEvent, block: Block) {
+    const rect = gridRef.current?.getBoundingClientRect()
+    if (!rect) return
+    // موقعیت مطلق موس نسبت به viewport
+    setTooltip({
+      block,
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    })
+  }
+
+  function closeTooltip() {
+    setTooltip(null)
+  }
+
+  // اطلاعات نمایش tooltip (از block های ثبت‌شده)
+  const tipCourse = tooltip?.block.course
+  const tipGroup = tooltip?.block.group
+  const tipStart = tooltip?.block.startMin
+  const tipEnd = tooltip?.block.endMin
+  const tipColor = tipCourse ? colorMap.get(tipCourse.id) ?? BASE_COLORS[0] : BASE_COLORS[0]
+
   return (
-    <div className="rounded-sm border-2 border-foreground bg-card shadow-[4px_4px_0_var(--color-foreground)] flex flex-col flex-1 min-h-[500px] lg:min-h-0 overflow-hidden">
+    <div ref={gridRef} className="relative rounded-sm border-2 border-foreground bg-card shadow-[4px_4px_0_var(--color-foreground)] flex flex-col flex-1 min-h-[500px] lg:min-h-0 overflow-hidden" onMouseLeave={closeTooltip}>
       <div className="flex flex-col h-full">
         {/* سربرگ روزها */}
         <div className="shrink-0 grid grid-cols-[52px_repeat(6,minmax(0,1fr))] border-b-2 border-foreground bg-foreground text-background">
@@ -153,9 +178,33 @@ export default function TimetableGrid({
             day={day}
             blocks={blocks.filter((b) => b.day === day)}
             courseColor={(id) => colorMap.get(id) ?? BASE_COLORS[0]}
+            onHoverBlock={handleBlockPointerMove}
+            onLeave={closeTooltip}
           />
         ))}
-        </div>
+        {/* فلوتینگ تولتیپ دنبال‌کننده‌ی موس */}
+        {tooltip && tipCourse && tipGroup ? (
+          <div
+            dir="rtl"
+            className="pointer-events-none fixed z-[60] flex w-52 flex-col gap-1 rounded-none border-2 border-foreground px-3 py-2 shadow-[4px_4px_0_var(--color-foreground)]"
+            style={{
+              backgroundColor: tipColor.bg,
+              color: tipColor.fg,
+              top: tooltip.y + 16,
+              left: tooltip.x + 16,
+              transform: 'translate(-0px, 0px)',
+            }}
+          >
+            <span className="font-black text-xs leading-snug">{tipCourse.name}</span>
+            <span className="opacity-90 font-bold text-[11px]">
+              گروه {tipGroup.number} {tipGroup.instructor && `— ${tipGroup.instructor}`}
+            </span>
+            <span className="opacity-90 text-[11px]">
+              {tipStart !== undefined && tipEnd !== undefined && `${minToTime(tipStart)} تا ${minToTime(tipEnd)}`}
+            </span>
+          </div>
+        ) : null}
+      </div>
       </div>
     </div>
   )
@@ -165,10 +214,14 @@ function DayColumn({
   day,
   blocks,
   courseColor,
+  onHoverBlock,
+  onLeave,
 }: {
   day: number
   blocks: Block[]
   courseColor: (courseId: string) => BlockColor
+  onHoverBlock: (e: React.PointerEvent, b: Block) => void
+  onLeave: () => void
 }) {
   // محاسبه گروه‌های همپوشان برای تنظیم عرض و موقعیت
   const positions = blocks.map(() => ({ width: 100, left: 0 }))
@@ -247,53 +300,34 @@ function DayColumn({
         const color = courseColor(b.course.id)
 
         return (
-          <Tooltip key={`${b.course.id}-${bi}`}>
-            <TooltipTrigger asChild onClick={(e) => e.preventDefault()} onPointerDown={(e) => e.preventDefault()}>
+          <div
+            key={`${b.course.id}-${bi}`}
+            className="absolute overflow-hidden rounded-none border-2 border-foreground text-[10px] leading-snug shadow-[2px_2px_0_var(--color-foreground)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[4px_4px_0_var(--color-foreground)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0_var(--color-foreground)] cursor-default hover:z-10 group"
+            style={{
+              top: `${Math.max(0, topPct)}%`,
+              height: `calc(${heightPct}% - 3px)`,
+              minHeight: 24,
+              width: `calc(${pos.width}% - 4px)`,
+              right: `calc(${pos.left}% + 2px)`,
+              backgroundColor: color.bg,
+              color: color.fg,
+            }}
+            onPointerMove={(e) => onHoverBlock(e, b)}
+            onPointerLeave={onLeave}
+            onClick={(e) => e.preventDefault()}
+            onPointerDown={(e) => e.preventDefault()}
+          >
+            {b.conflict && (
               <div
-                className="absolute overflow-hidden rounded-none border-2 border-foreground text-[10px] leading-snug shadow-[2px_2px_0_var(--color-foreground)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[4px_4px_0_var(--color-foreground)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0_var(--color-foreground)] cursor-default hover:z-10 group"
+                className="absolute inset-0 opacity-30 pointer-events-none animate-stripes"
                 style={{
-                  top: `${Math.max(0, topPct)}%`,
-                  height: `calc(${heightPct}% - 3px)`,
-                  minHeight: 24,
-                  width: `calc(${pos.width}% - 4px)`,
-                  right: `calc(${pos.left}% + 2px)`,
-                  backgroundColor: color.bg,
-                  color: color.fg,
+                  background: `repeating-linear-gradient(-45deg, var(--color-foreground), var(--color-foreground) 6px, transparent 6px, transparent 12px)`,
+                  backgroundSize: '17px 17px'
                 }}
-              >
-                {b.conflict && (
-                  <div
-                    className="absolute inset-0 opacity-30 pointer-events-none animate-stripes"
-                    style={{
-                      background: `repeating-linear-gradient(-45deg, var(--color-foreground), var(--color-foreground) 6px, transparent 6px, transparent 12px)`,
-                      backgroundSize: '17px 17px'
-                    }}
-                  />
-                )}
-                {/* هیچ متنی اینجا نشان داده نمی‌شود، فقط باکس رنگی */}
-              </div>
-            </TooltipTrigger>
-            <TooltipContent
-              side="top"
-              align="center"
-              sideOffset={4}
-              onPointerDownOutside={(e) => {
-                e.preventDefault()
-              }}
-              className="rounded-none border-2 border-foreground px-3 py-2 shadow-[4px_4px_0_var(--color-foreground)] z-50"
-              style={{ backgroundColor: color.bg, color: color.fg }}
-            >
-              <div className="flex flex-col gap-1" dir="rtl">
-                <span className="font-black text-xs">{b.course.name}</span>
-                <span className="opacity-90 font-bold">
-                  گروه {b.group.number} {b.group.instructor && `— ${b.group.instructor}`}
-                </span>
-                <span className="opacity-90">
-                  {minToTime(b.startMin)} تا {minToTime(b.endMin)}
-                </span>
-              </div>
-            </TooltipContent>
-          </Tooltip>
+              />
+            )}
+            {/* empty box */}
+          </div>
         )
       })}
     </div>
