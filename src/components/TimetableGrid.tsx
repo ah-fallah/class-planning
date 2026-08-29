@@ -84,6 +84,10 @@ export default function TimetableGrid({
     block: Block
     x: number
     y: number
+    clientX: number
+    clientY: number
+    maxX: number
+    maxY: number
   } | null>(null)
   const gridRef = useRef<HTMLDivElement>(null)
 
@@ -130,6 +134,10 @@ export default function TimetableGrid({
       block,
       x: e.clientX - rect.left,
       y: e.clientY - rect.top,
+      clientX: e.clientX,
+      clientY: e.clientY,
+      maxX: rect.left + rect.width,
+      maxY: rect.top + rect.height,
     })
   }
 
@@ -190,9 +198,11 @@ export default function TimetableGrid({
             style={{
               backgroundColor: tipColor.bg,
               color: tipColor.fg,
-              top: tooltip.y + 16,
-              left: tooltip.x + 16,
-              transform: 'translate(-0px, 0px)',
+              left: Math.min(tooltip.clientX + 8, tooltip.maxX - 208),
+              top:
+                tooltip.clientY + 8 + 100 > window.innerHeight
+                  ? tooltip.clientY - 108
+                  : tooltip.clientY + 8,
             }}
           >
             <span className="font-black text-xs leading-snug">{tipCourse.name}</span>
