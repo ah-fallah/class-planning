@@ -1,6 +1,6 @@
-import type { Course, Group, SelectionMap } from '../types'
+import type { Course, DayIndex, Group, SelectionMap } from '../types'
 import { DAY_NAMES, dayName, END_HOUR, minToTime, START_HOUR } from './time'
-import { formatJalaliDate, todayISO } from './jalali'
+import { formatJalaliDate, isoToJalali, todayISO } from './jalali'
 
 interface Picked {
   course: Course
@@ -18,10 +18,61 @@ function collectPicked(courses: Course[], selection: SelectionMap): Picked[] {
   return picked
 }
 
+/** تاریخ ISO میلادی -> «1405/10/30» شمسی (فرمت قابل فهم برای normalizeDate هنگام import) */
+function jalaliCell(iso: string): string {
+  const j = isoToJalali(iso)
+  if (!j) return ''
+  return `${j.jy}/${String(j.jm).padStart(2, '0')}/${String(j.jd).padStart(2, '0')}`
+}
+
+/**
+ * ردیف‌های شیت «دروس» در دقیقاً همان فرمت ستون‌هایی که parseWorkbook می‌خواند،
+ * تا فایل خروجی مستقیماً قابل import مجدد باشد (round-trip).
+ */
+function buildImportRows(picked: Picked[]): (string | number)[][] {
+  const rows: (string | number)[][] = [
+    ['نام درس', 'شماره گروه', 'استاد', 'واحد', 'روزها', 'ساعت شروع', 'ساعت پایان', 'تاریخ امتحان', 'ساعت شروع امتحان', 'ساعت پایان امتحان'],
+  ]
+  for (const { course, group } of picked) {
+    // جلسات با ساعت یکسان در یک ردیف با روزهای جدا‌شده با «،» جمع می‌شوند
+    const byTime = new Map<string, number[]>()
+    for (const s of group.sessions) {
+      const key = `${s.startMin}-${s.endMin}`
+      const dayList = byTime.get(key) ?? []
+      dayList.push(s.day)
+      byTime.set(key, dayList)
+    }
+    for (const [key, dayList] of byTime) {
+      const dash = key.indexOf('-')
+      const startMin = +key.slice(0, dash)
+      const endMin = +key.slice(dash + 1)
+      const days = dayList
+        .slice()
+        .sort((a, b) => a - b)
+        .map((d) => dayName(d as DayIndex))
+        .join('،')
+      const exam = group.exam
+      rows.push([
+        course.name,
+        group.number,
+        group.instructor ?? '',
+        course.units,
+        days,
+        minToTime(startMin),
+        minToTime(endMin),
+        exam ? jalaliCell(exam.dateISO) : '',
+        exam ? minToTime(exam.startMin) : '',
+        exam ? minToTime(exam.endMin) : '',
+      ])
+    }
+  }
+  return rows
+}
+
 /**
  * خروجی اکسل برنامه‌ی انتخاب فعلی:
- * شیت «برنامه هفتگی» (گرید روز × ساعت با ادغام سلول‌های بلوک‌های چندساعته)،
- * شیت «امتحانات» (تاریخ شمسی) و شیت «دروس» (خلاصه‌ی انتخاب‌ها + جمع واحدها).
+ * شیت ۱ «دروس» با همان فرمت ستون‌های import (قابل import مجدد با همان دکمه‌ی «اکسل»)،
+ * شیت ۲ «برنامه هفتگی» (گرید روز × ساعت با ادغام سلول‌های بلوک‌های چندساعته).
  * @returns نام فایل ساخته‌شده
  */
 export async function exportTimetable(courses: Course[], selection: SelectionMap): Promise<string> {
@@ -34,7 +85,16 @@ export async function exportTimetable(courses: Course[], selection: SelectionMap
   // راست‌به‌چپ کردن شیت‌ها برای فارسی
   wb.Workbook = { Views: [{ RTL: true }] }
 
-  /* --- شیت ۱: برنامه هفتگی --- */
+  /* --- شیت ۱: دروس (فرمت سازگار با import) --- */
+  const importRows = buildImportRows(picked)
+  const wsList = XLSX.utils.aoa_to_sheet(importRows)
+  wsList['!cols'] = [
+    { wch: 26 }, { wch: 10 }, { wch: 16 }, { wch: 7 }, { wch: 20 },
+    { wch: 10 }, { wch: 10 }, { wch: 14 }, { wch: 16 }, { wch: 16 },
+  ]
+  XLSX.utils.book_append_sheet(wb, wsList, 'دروس')
+
+  /* --- شیت ۲: برنامه هفتگی --- */
   const hasFriday = picked.some(({ group }) => group.sessions.some((s) => s.day === 6))
   const days = DAY_NAMES.slice(0, hasFriday ? 7 : 6)
 
@@ -65,40 +125,6 @@ export async function exportTimetable(courses: Course[], selection: SelectionMap
   wsGrid['!merges'] = merges
   wsGrid['!cols'] = [{ wch: 7 }, ...days.map(() => ({ wch: 24 }))]
   XLSX.utils.book_append_sheet(wb, wsGrid, 'برنامه هفتگی')
-
-  /* --- شیت ۲: امتحانات --- */
-  const exams: (string | number)[][] = [['درس', 'گروه', 'تاریخ امتحان', 'ساعت شروع', 'ساعت پایان']]
-  for (const { course, group } of picked) {
-    if (!group.exam) continue
-    exams.push([
-      course.name,
-      group.number,
-      formatJalaliDate(group.exam.dateISO),
-      minToTime(group.exam.startMin),
-      minToTime(group.exam.endMin),
-    ])
-  }
-  if (exams.length > 1) {
-    const wsExams = XLSX.utils.aoa_to_sheet(exams)
-    wsExams['!cols'] = [{ wch: 26 }, { wch: 8 }, { wch: 16 }, { wch: 10 }, { wch: 10 }]
-    XLSX.utils.book_append_sheet(wb, wsExams, 'امتحانات')
-  }
-
-  /* --- شیت ۳: دروس انتخاب‌شده --- */
-  const list: (string | number)[][] = [['درس', 'گروه', 'استاد', 'واحد', 'جلسات', 'اولویت']]
-  let totalUnits = 0
-  for (const { course, group } of picked) {
-    totalUnits += course.units
-    const sessions = group.sessions
-      .map((s) => `${dayName(s.day)} ${minToTime(s.startMin)}–${minToTime(s.endMin)}`)
-      .join(' و ')
-    list.push([course.name, group.number, group.instructor ?? '', course.units, sessions, course.priority])
-  }
-  list.push([])
-  list.push(['جمع واحدها', '', '', totalUnits])
-  const wsList = XLSX.utils.aoa_to_sheet(list)
-  wsList['!cols'] = [{ wch: 26 }, { wch: 8 }, { wch: 16 }, { wch: 7 }, { wch: 40 }, { wch: 8 }]
-  XLSX.utils.book_append_sheet(wb, wsList, 'دروس')
 
   const dateLabel = formatJalaliDate(todayISO()).replace(/ /g, '-')
   const fileName = `برنامه-هفتگی-${dateLabel}.xlsx`
