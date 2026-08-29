@@ -9,11 +9,13 @@ import {
   TriangleAlert,
   CalendarDays,
   FileSpreadsheet,
+  FileDown,
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import ConflictBanner from '@/components/ConflictBanner'
 import CourseForm from '@/components/CourseForm'
 import ImportDialog from '@/components/ImportDialog'
+import { exportTimetable } from '@/lib/exportExcel'
 import TimetableGrid from '@/components/TimetableGrid'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Badge } from '@/components/ui/badge'
@@ -119,6 +121,24 @@ export default function DashboardPage() {
 
       {/* ستون وسط: جدول هفتگی */}
       <section aria-label="جدول هفتگی" className="order-2 min-w-0 flex flex-col min-h-[500px] lg:min-h-0">
+        <div className="mb-3 flex shrink-0 flex-wrap items-center gap-2">
+          <h2 className="text-sm font-black tracking-wide">جدول هفتگی</h2>
+          <span className="flex-1" />
+          <Button
+            size="xs"
+            variant="outline"
+            disabled={!Object.values(selection).some(Boolean)}
+            onClick={async () => {
+              try {
+                await exportTimetable(courses, selection)
+              } catch {
+                alert('خروجی اکسل ناموفق بود. لطفاً دوباره تلاش کنید.')
+              }
+            }}
+          >
+            <FileDown /> خروجی اکسل
+          </Button>
+        </div>
         <TimetableGrid courses={courses} selection={selection} />
       </section>
 

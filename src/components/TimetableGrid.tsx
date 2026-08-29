@@ -1,14 +1,12 @@
 import { cn } from '@/lib/utils'
 import type { Course, DayIndex, Group, SelectionMap } from '@/types'
-import { DAY_NAMES, minToTime, sessionsOverlap } from '@/lib/time'
+import { DAY_NAMES, END_HOUR, minToTime, sessionsOverlap, START_HOUR } from '@/lib/time'
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 
-export const START_HOUR = 7
-export const END_HOUR = 20
 const TOTAL_MIN = (END_HOUR - START_HOUR) * 60
 
 export const BLOCK_COLORS = [

@@ -1,5 +1,9 @@
 import type { DayIndex, Session } from '../types'
 
+/** بازه‌ی نمایش جدول هفتگی (مشترک بین UI و خروجی اکسل) */
+export const START_HOUR = 7
+export const END_HOUR = 20
+
 export const DAY_NAMES = [
   'شنبه',
   'یکشنبه',
