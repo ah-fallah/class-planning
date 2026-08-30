@@ -61,11 +61,11 @@
 .dark {
   color-scheme: dark;
   /* پس‌زمینه و سایه‌ی بلوکی — مقادیر انتخابی */
-  --background: #4e4e6e;
-  --brutal-ink: #50505c;
+  --background: #161616;
+  --brutal-ink: #3e3e3e;
   --foreground: #e8e8e1;
 
-  --card: #202024;
+  --card: #3e3e3e;
   --card-foreground: #e8e8e1;
 
   --popover: #202024;
