@@ -18,7 +18,7 @@ export default function ConflictBanner({ conflicts, units, settings }: Props) {
   if (conflicts.length === 0 && !overMax && !underMin) {
     if (units === 0) return null
     return (
-      <div className="relative flex items-center gap-2.5 overflow-hidden rounded-none border-2 border-foreground bg-success text-success-foreground px-3.5 py-3 text-sm shadow-[3px_3px_0_var(--color-foreground)]">
+      <div className="relative flex items-center gap-2.5 overflow-hidden rounded-none border-2 border-brutal-ink bg-success text-success-foreground px-3.5 py-3 text-sm shadow-[3px_3px_0_var(--brutal-ink)]">
         <CheckCircle2 size={18} strokeWidth={2.5} className="shrink-0" />
         <span className="font-bold">انتخاب فعلی عالیست! بدون تداخل و در محدوده مجاز.</span>
       </div>
@@ -26,7 +26,7 @@ export default function ConflictBanner({ conflicts, units, settings }: Props) {
   }
 
   return (
-    <div className="rounded-sm border-2 border-foreground bg-card p-3 shadow-[3px_3px_0_var(--color-foreground)]">
+    <div className="rounded-sm border-2 border-brutal-ink bg-card p-3 shadow-[3px_3px_0_var(--brutal-ink)]">
       <h3 className="mb-3 flex items-center gap-2 px-0.5 text-sm font-black uppercase tracking-wider">
         <AlertTriangle size={16} strokeWidth={2.5} className="text-destructive" />
         نیازمند بررسی
@@ -36,7 +36,7 @@ export default function ConflictBanner({ conflicts, units, settings }: Props) {
           <Banner tone="error" icon={<XCircle size={16} strokeWidth={2.5} className="mt-0.5 shrink-0" />} title={`${sessionConflicts.length} تداخل کلاسی پیدا شد:`}>
             <div className="mt-1.5 flex flex-col gap-1.5">
               {sessionConflicts.map((c, i) => (
-                <div key={i} className="rounded-sm border border-foreground/30 bg-background/50 px-2 py-1.5 font-bold text-foreground">
+                <div key={i} className="rounded-sm border border-brutal-ink/30 bg-background/50 px-2 py-1.5 font-bold text-foreground">
                   {c.label}
                 </div>
               ))}
@@ -47,7 +47,7 @@ export default function ConflictBanner({ conflicts, units, settings }: Props) {
           <Banner tone="warning" icon={<CalendarX size={16} strokeWidth={2.5} className="mt-0.5 shrink-0" />} title={`${examConflicts.length} امتحان همزمان:`}>
             <div className="mt-1.5 flex flex-col gap-1.5">
               {examConflicts.map((c, i) => (
-                <div key={i} className="rounded-sm border border-foreground/30 bg-background/50 px-2 py-1.5 font-bold text-foreground">
+                <div key={i} className="rounded-sm border border-brutal-ink/30 bg-background/50 px-2 py-1.5 font-bold text-foreground">
                   {c.label}
                 </div>
               ))}
@@ -85,7 +85,7 @@ function Banner({
   return (
     <div
       className={cn(
-        "relative flex flex-col gap-1 overflow-hidden rounded-sm border-2 border-foreground px-3 py-2.5 text-xs shadow-[2px_2px_0_var(--color-foreground)] transition-transform hover:-translate-y-0.5 hover:shadow-[3px_3px_0_var(--color-foreground)]",
+        "relative flex flex-col gap-1 overflow-hidden rounded-sm border-2 border-brutal-ink px-3 py-2.5 text-xs shadow-[2px_2px_0_var(--brutal-ink)] transition-transform hover:-translate-y-0.5 hover:shadow-[3px_3px_0_var(--brutal-ink)]",
         isError ? 'bg-destructive text-destructive-foreground' : 'bg-warning text-warning-foreground'
       )}
     >

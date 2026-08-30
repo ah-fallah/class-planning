@@ -1,23 +1,37 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { Course, DayIndex, Group, Priority, Session, Settings, SelectionMap } from '../types'
+import type { Course, DayIndex, Group, PrefLevel, Priority, Session, Settings, SelectionMap, ThemeMode } from '../types'
 import { genId } from '../lib/id'
+import type { BackupRestoreData } from '../lib/backup'
 
-const DEFAULT_SETTINGS: Settings = { minUnits: 12, maxUnits: 20 }
+const DEFAULT_SETTINGS: Settings = {
+  minUnits: 12,
+  maxUnits: 20,
+  freeDays: 'off',
+  timeFrom: null,
+  timeTo: null,
+  timeWeight: 'off',
+  theme: 'system',
+}
 
 interface AppState {
   courses: Course[]
   selection: SelectionMap
   settings: Settings
+  /** courseId -> قفل بودن گروه انتخاب‌شده در پیشنهاد هوشمند */
+  locked: Record<string, boolean>
   addCourse: (c: Omit<Course, 'id'>) => void
   updateCourse: (id: string, c: Course) => void
   deleteCourse: (id: string) => void
   setSelection: (courseId: string, groupId: string | null) => void
+  setLocked: (courseId: string, locked: boolean) => void
   applyPicks: (picks: Record<string, string>) => void
   clearSelection: () => void
   setSettings: (s: Partial<Settings>) => void
   replaceCourses: (courses: Course[]) => void
   clearAll: () => void
+  /** بازیابی کامل از فایل بکاپ: همه‌ی داده‌ها جایگزین می‌شوند (با پاک‌سازی دفاعی migrateState) */
+  restoreAll: (data: BackupRestoreData) => void
 }
 
 /* ------------------------------------------------------------------ */
@@ -99,22 +113,62 @@ function sanitizeSelection(raw: unknown): SelectionMap {
   return out
 }
 
+const PREF_VALUES = ['off', 'low', 'high'] as const
+
+function sanitizePref(raw: unknown, fallback: PrefLevel): PrefLevel {
+  return typeof raw === 'string' && (PREF_VALUES as readonly string[]).includes(raw)
+    ? (raw as PrefLevel)
+    : fallback
+}
+
+function sanitizeTheme(raw: unknown): ThemeMode {
+  return raw === 'light' || raw === 'dark' ? raw : 'system'
+}
+
+/** courseId -> قفل گروه انتخاب‌شده برای پیشنهاد هوشمند */
+function sanitizeLocked(raw: unknown): Record<string, boolean> {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {}
+  const out: Record<string, boolean> = {}
+  for (const [k, v] of Object.entries(raw as Record<string, unknown>)) {
+    if (k && v === true) out[k] = true
+  }
+  return out
+}
+
 function sanitizeSettings(raw: unknown): Settings {
   const s = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>
   const min =
     typeof s.minUnits === 'number' && s.minUnits >= 0 ? Math.floor(s.minUnits) : DEFAULT_SETTINGS.minUnits
   const max =
     typeof s.maxUnits === 'number' && s.maxUnits >= 1 ? Math.floor(s.maxUnits) : DEFAULT_SETTINGS.maxUnits
-  return { minUnits: min, maxUnits: Math.max(min, max) }
+  let timeFrom: number | null =
+    typeof s.timeFrom === 'number' && s.timeFrom >= 0 && s.timeFrom < 1440 ? Math.floor(s.timeFrom) : null
+  let timeTo: number | null =
+    typeof s.timeTo === 'number' && s.timeTo > 0 && s.timeTo <= 1440 ? Math.floor(s.timeTo) : null
+  // بازه نامعتبر (خیلی کوتاه یا وارونه) → غیرفعال
+  if (timeFrom === null || timeTo === null || timeTo - timeFrom < 15) {
+    timeFrom = null
+    timeTo = null
+  }
+  return {
+    minUnits: min,
+    maxUnits: Math.max(min, max),
+    freeDays: sanitizePref(s.freeDays, 'off'),
+    timeFrom,
+    timeTo,
+    timeWeight: sanitizePref(s.timeWeight, 'off'),
+    theme: sanitizeTheme(s.theme),
+  }
 }
 
 /** هر نسخه‌ای از دیتای ذخیره‌شده را به شکل معتبر فعلی تبدیل می‌کند */
-function migrateState(persisted: unknown): Pick<AppState, 'courses' | 'selection' | 'settings'> {
+function migrateState(persisted: unknown): Pick<AppState, 'courses' | 'selection' | 'settings' | 'locked'> {
   const raw = (persisted && typeof persisted === 'object' ? persisted : {}) as Record<string, unknown>
   return {
     courses: sanitizeCourses(raw.courses),
     selection: sanitizeSelection(raw.selection),
     settings: sanitizeSettings(raw.settings),
+    locked: sanitizeLocked(raw.locked),
   }
 }
 
@@ -124,26 +178,48 @@ export const useStore = create<AppState>()(
       courses: [],
       selection: {},
       settings: DEFAULT_SETTINGS,
+      locked: {},
 
       addCourse: (c) =>
         set((st) => ({ courses: [...st.courses, { ...c, id: genId('course') }] })),
 
       updateCourse: (id, c) =>
-        set((st) => ({
-          courses: st.courses.map((x) => (x.id === id ? c : x)),
-          selection: Object.fromEntries(
+        set((st) => {
+          const selection = Object.fromEntries(
             Object.entries(st.selection).filter(([cid]) => cid !== id || c.groups.some((g) => g.id === st.selection[cid])),
-          ),
-        })),
+          )
+          const locked = { ...st.locked }
+          // اگر انتخابِ درس ویرایش‌شده از دست رفت، قفلش بی‌معناست
+          if (typeof selection[id] !== 'string' && locked[id]) delete locked[id]
+          return { courses: st.courses.map((x) => (x.id === id ? c : x)), selection, locked }
+        }),
 
       deleteCourse: (id) =>
         set((st) => {
           const { [id]: _removed, ...rest } = st.selection
-          return { courses: st.courses.filter((c) => c.id !== id), selection: rest }
+          const { [id]: _removedLock, ...restLocked } = st.locked
+          return { courses: st.courses.filter((c) => c.id !== id), selection: rest, locked: restLocked }
         }),
 
       setSelection: (courseId, groupId) =>
-        set((st) => ({ selection: { ...st.selection, [courseId]: groupId } })),
+        set((st) => {
+          const selection = { ...st.selection, [courseId]: groupId }
+          // برداشتن انتخاب، قفل آن درس را هم بی‌معنا می‌کند
+          let locked = st.locked
+          if (groupId === null && locked[courseId]) {
+            locked = { ...locked }
+            delete locked[courseId]
+          }
+          return { selection, locked }
+        }),
+
+      setLocked: (courseId, locked) =>
+        set((st) => {
+          const next = { ...st.locked }
+          if (locked) next[courseId] = true
+          else delete next[courseId]
+          return { locked: next }
+        }),
 
       applyPicks: (picks) =>
         set((st) => {
@@ -160,12 +236,19 @@ export const useStore = create<AppState>()(
 
       replaceCourses: (courses) => set({ courses }),
 
-      clearAll: () => set({ courses: [], selection: {}, settings: DEFAULT_SETTINGS }),
+      clearAll: () => set({ courses: [], selection: {}, locked: {}, settings: DEFAULT_SETTINGS }),
+
+      restoreAll: (data) =>
+        set(() => {
+          const clean = migrateState(data)
+          return { courses: clean.courses, selection: clean.selection, settings: clean.settings, locked: clean.locked }
+        }),
     }),
     {
       name: 'class-planning-v1',
       // از این پس هر تغییر ساختار داده = افزایش version + هندل در migrateState
-      version: 2,
+      // v4: افزودن settings.theme (حالت نمایش)
+      version: 4,
       migrate: (persisted) => migrateState(persisted),
     },
   ),

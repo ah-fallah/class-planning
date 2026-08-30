@@ -36,13 +36,13 @@ export function NumberInput({
   }
 
   return (
-    <div className={cn('flex h-12 w-full border-2 border-foreground bg-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2', className)} dir="ltr">
+    <div className={cn('flex h-12 w-full border-2 border-brutal-ink bg-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2', className)} dir="ltr">
       <button
         type="button"
         tabIndex={-1}
         onClick={handleDecrement}
         disabled={value <= min}
-        className="flex shrink-0 aspect-square h-full items-center justify-center border-e-2 border-foreground bg-primary/20 transition-all hover:bg-primary active:bg-primary/80 disabled:pointer-events-none disabled:opacity-50"
+        className="flex shrink-0 aspect-square h-full items-center justify-center border-e-2 border-brutal-ink bg-primary/20 transition-all hover:bg-primary active:bg-primary/80 disabled:pointer-events-none disabled:opacity-50"
       >
         <Minus size={18} strokeWidth={3} className="text-foreground" />
       </button>
@@ -62,7 +62,7 @@ export function NumberInput({
         tabIndex={-1}
         onClick={handleIncrement}
         disabled={value >= max}
-        className="flex shrink-0 aspect-square h-full items-center justify-center border-s-2 border-foreground bg-primary/20 transition-all hover:bg-primary active:bg-primary/80 disabled:pointer-events-none disabled:opacity-50"
+        className="flex shrink-0 aspect-square h-full items-center justify-center border-s-2 border-brutal-ink bg-primary/20 transition-all hover:bg-primary active:bg-primary/80 disabled:pointer-events-none disabled:opacity-50"
       >
         <Plus size={18} strokeWidth={3} className="text-foreground" />
       </button>

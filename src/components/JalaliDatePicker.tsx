@@ -65,7 +65,7 @@ export default function JalaliDatePicker({ id, value, onChange }: Props) {
         <button
           id={id}
           type="button"
-          className="flex h-9 w-44 items-center justify-between gap-2 rounded-sm border-2 border-foreground bg-background px-3 py-2 text-sm font-bold shadow-[2px_2px_0_var(--color-foreground)] transition-all hover:bg-secondary active:translate-y-[1px] active:shadow-[1px_1px_0_var(--color-foreground)] focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-foreground outline-none"
+          className="flex h-9 w-44 items-center justify-between gap-2 rounded-sm border-2 border-brutal-ink bg-background px-3 py-2 text-sm font-bold shadow-[2px_2px_0_var(--brutal-ink)] transition-all hover:bg-secondary active:translate-y-[1px] active:shadow-[1px_1px_0_var(--brutal-ink)] focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-foreground outline-none"
         >
           <span className={value ? '' : 'text-muted-foreground font-medium'}>
             {selected ? `${faDigits(selected.jd)} ${JALALI_MONTHS[selected.jm - 1]} ${faDigits(selected.jy)}` : 'انتخاب تاریخ'}
@@ -85,16 +85,16 @@ export default function JalaliDatePicker({ id, value, onChange }: Props) {
           </span>
         </button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-auto p-0 rounded-none border-[3px] border-foreground shadow-[6px_6px_0_var(--color-foreground)] overflow-hidden bg-background">
+      <PopoverContent align="start" className="w-auto p-0 rounded-none border-[3px] border-brutal-ink shadow-[6px_6px_0_var(--brutal-ink)] overflow-hidden bg-background">
         {/* سرصفحه ماه/سال */}
-        <div className="flex items-center justify-between border-b-2 border-foreground bg-saffron/10 px-3 py-2">
-          <button type="button" aria-label="ماه قبل" onClick={() => move(-1)} className="flex size-6 items-center justify-center rounded-none border-2 border-foreground bg-background hover:bg-saffron active:translate-y-[1px] transition-all">
+        <div className="flex items-center justify-between border-b-2 border-brutal-ink bg-saffron/10 px-3 py-2">
+          <button type="button" aria-label="ماه قبل" onClick={() => move(-1)} className="flex size-6 items-center justify-center rounded-none border-2 border-brutal-ink bg-background hover:bg-saffron active:translate-y-[1px] transition-all">
             <ChevronRight strokeWidth={3} size={14} />
           </button>
           <div className="flex items-center gap-1 text-sm font-black tracking-wide">
             <select
               aria-label="ماه"
-              className="rounded-none border-2 border-foreground bg-background px-1 py-0.5 hover:bg-saffron outline-none focus-visible:ring-2 focus-visible:ring-foreground"
+              className="rounded-none border-2 border-brutal-ink bg-background px-1 py-0.5 hover:bg-saffron outline-none focus-visible:ring-2 focus-visible:ring-foreground"
               value={viewMonth}
               onChange={(e) => setViewMonth(+e.target.value)}
             >
@@ -104,7 +104,7 @@ export default function JalaliDatePicker({ id, value, onChange }: Props) {
             </select>
             <select
               aria-label="سال"
-              className="rounded-none border-2 border-foreground bg-background px-1 py-0.5 hover:bg-saffron outline-none focus-visible:ring-2 focus-visible:ring-foreground"
+              className="rounded-none border-2 border-brutal-ink bg-background px-1 py-0.5 hover:bg-saffron outline-none focus-visible:ring-2 focus-visible:ring-foreground"
               value={viewYear}
               onChange={(e) => setViewYear(+e.target.value)}
             >
@@ -113,7 +113,7 @@ export default function JalaliDatePicker({ id, value, onChange }: Props) {
               ))}
             </select>
           </div>
-          <button type="button" aria-label="ماه بعد" onClick={() => move(1)} className="flex size-6 items-center justify-center rounded-none border-2 border-foreground bg-background hover:bg-saffron active:translate-y-[1px] transition-all">
+          <button type="button" aria-label="ماه بعد" onClick={() => move(1)} className="flex size-6 items-center justify-center rounded-none border-2 border-brutal-ink bg-background hover:bg-saffron active:translate-y-[1px] transition-all">
             <ChevronLeft strokeWidth={3} size={14} />
           </button>
         </div>
@@ -145,10 +145,10 @@ export default function JalaliDatePicker({ id, value, onChange }: Props) {
                           className={cn(
                             'size-8 rounded-none border-2 text-center tabular-nums transition-all outline-none font-bold',
                             isSelected
-                              ? 'bg-primary border-foreground text-primary-foreground shadow-[2px_2px_0_var(--color-foreground)] translate-x-[-1px] translate-y-[-1px] font-black'
+                              ? 'bg-primary border-brutal-ink text-primary-foreground shadow-[2px_2px_0_var(--brutal-ink)] translate-x-[-1px] translate-y-[-1px] font-black'
                               : isToday
-                                ? 'bg-secondary border-foreground border-dashed hover:bg-saffron hover:border-solid'
-                                : 'border-transparent hover:border-foreground hover:bg-secondary/50',
+                                ? 'bg-secondary border-brutal-ink border-dashed hover:bg-saffron hover:border-solid'
+                                : 'border-transparent hover:border-brutal-ink hover:bg-secondary/50',
                           )}
                         >
                           {faDigits(jd)}
@@ -163,10 +163,10 @@ export default function JalaliDatePicker({ id, value, onChange }: Props) {
         </div>
 
         {/* پانویس */}
-        <div className="flex items-center justify-between border-t-2 border-foreground bg-muted/30 px-3 py-2">
+        <div className="flex items-center justify-between border-t-2 border-brutal-ink bg-muted/30 px-3 py-2">
           <button
             type="button"
-            className="rounded-none border-2 border-foreground bg-background px-2 py-1 text-xs font-bold shadow-[2px_2px_0_var(--color-foreground)] transition-all hover:-translate-y-[1px] hover:bg-secondary active:translate-y-0 active:shadow-none"
+            className="rounded-none border-2 border-brutal-ink bg-background px-2 py-1 text-xs font-bold shadow-[2px_2px_0_var(--brutal-ink)] transition-all hover:-translate-y-[1px] hover:bg-secondary active:translate-y-0 active:shadow-none"
             onClick={() => {
               const t = todayISO()
               onChange(t)
@@ -181,7 +181,7 @@ export default function JalaliDatePicker({ id, value, onChange }: Props) {
           {value && (
             <button
               type="button"
-              className="rounded-none border-2 border-foreground bg-destructive/10 px-2 py-1 text-xs font-bold text-destructive-foreground shadow-[2px_2px_0_var(--color-foreground)] transition-all hover:-translate-y-[1px] hover:bg-destructive hover:text-white active:translate-y-0 active:shadow-none"
+              className="rounded-none border-2 border-brutal-ink bg-destructive/10 px-2 py-1 text-xs font-bold text-destructive-foreground shadow-[2px_2px_0_var(--brutal-ink)] transition-all hover:-translate-y-[1px] hover:bg-destructive hover:text-white active:translate-y-0 active:shadow-none"
               onClick={() => {
                 onChange('')
                 setOpen(false)

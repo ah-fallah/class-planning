@@ -44,7 +44,7 @@ export default function TimePicker({ id, value, onChange }: Props) {
         <button
           id={id}
           type="button"
-          className="flex h-9 w-24 items-center justify-between gap-2 rounded-sm border-2 border-foreground bg-background px-3 py-2 text-sm font-bold shadow-[2px_2px_0_var(--color-foreground)] transition-all hover:bg-secondary active:translate-y-[1px] active:shadow-[1px_1px_0_var(--color-foreground)] focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-foreground outline-none"
+          className="flex h-9 w-24 items-center justify-between gap-2 rounded-sm border-2 border-brutal-ink bg-background px-3 py-2 text-sm font-bold shadow-[2px_2px_0_var(--brutal-ink)] transition-all hover:bg-secondary active:translate-y-[1px] active:shadow-[1px_1px_0_var(--brutal-ink)] focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-foreground outline-none"
         >
           <span className="tabular-nums">{faDigits(minToTime(value))}</span>
           <Clock strokeWidth={2.5} size={14} className="opacity-60" />
@@ -52,14 +52,14 @@ export default function TimePicker({ id, value, onChange }: Props) {
       </PopoverTrigger>
       <PopoverContent
         align="start"
-        className="w-auto p-0 rounded-none border-[3px] border-foreground shadow-[6px_6px_0_var(--color-foreground)] overflow-hidden"
+        className="w-auto p-0 rounded-none border-[3px] border-brutal-ink shadow-[6px_6px_0_var(--brutal-ink)] overflow-hidden"
         onWheelCapture={(e) => {
           e.stopPropagation();
         }}
       >
         <div
           ref={listRef}
-          className="grid h-64 grid-cols-4 gap-[2px] bg-foreground border-b-2 border-foreground neo-scrollbar overflow-y-auto overscroll-contain"
+          className="grid h-64 grid-cols-4 gap-[2px] bg-foreground border-b-2 border-brutal-ink neo-scrollbar overflow-y-auto overscroll-contain"
           dir="ltr"
           onWheel={(e) => e.stopPropagation()}
         >

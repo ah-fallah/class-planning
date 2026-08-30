@@ -30,9 +30,25 @@ export interface Course {
   groups: Group[]
 }
 
+/** سطح اهمیت ترجیحات در پیشنهاد هوشمند */
+export type PrefLevel = 'off' | 'low' | 'high'
+
+/** حالت نمایش برنامه: روشن، تاریک یا هماهنگ با تنظیم سیستم */
+export type ThemeMode = 'light' | 'dark' | 'system'
+
 export interface Settings {
   minUnits: number
   maxUnits: number
+  /** اهمیت روزهای آزاد (روز کمتر کلاس) در امتیازدهی پیشنهادها */
+  freeDays: PrefLevel
+  /** شروع بازه زمانی مطلوب کلاس‌ها (دقیقه از نیمه‌شب)؛ null = غیرفعال */
+  timeFrom: number | null
+  /** پایان بازه زمانی مطلوب کلاس‌ها (دقیقه از نیمه‌شب)؛ null = غیرفعال */
+  timeTo: number | null
+  /** اهمیت جریمه جلسات بیرون از بازه مطلوب */
+  timeWeight: PrefLevel
+  /** تم رنگی برنامه — بلافاصله اعمال می‌شود و در فایل بکاپ هم ذخیره می‌شود */
+  theme: ThemeMode
 }
 
 /** courseId -> selected groupId (null = درس حذف شده از انتخاب) */
@@ -42,4 +58,8 @@ export interface SuggestionCombo {
   picks: Record<string, string> // courseId -> groupId
   totalUnits: number
   score: number
+  /** تعداد روزهای آزاد (شنبه تا پنجشنبه) در این ترکیب */
+  freeDays: number
+  /** تعداد دروس قفل‌شده که در این ترکیب ثابت مانده‌اند */
+  lockedCount: number
 }

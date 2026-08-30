@@ -59,7 +59,7 @@ function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "fixed top-[50%] left-[50%] z-50 flex flex-col w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] rounded-none border-[3px] border-foreground bg-background p-0 shadow-[8px_8px_0_var(--color-foreground)] duration-200 outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:max-w-lg",
+          "fixed top-[50%] left-[50%] z-50 flex flex-col w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] rounded-none border-[3px] border-brutal-ink bg-background p-0 shadow-[8px_8px_0_var(--brutal-ink)] duration-200 outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:max-w-lg",
           className
         )}
         {...props}
@@ -68,7 +68,7 @@ function DialogContent({
         {showCloseButton && (
           <DialogPrimitive.Close
             data-slot="dialog-close"
-            className="absolute top-3 left-3 flex size-8 items-center justify-center rounded-none border-2 border-foreground bg-destructive/10 text-destructive-foreground ring-offset-background transition-all hover:-translate-y-[1px] hover:bg-destructive hover:text-white hover:shadow-[2px_2px_0_var(--color-foreground)] focus:outline-none focus-visible:ring-2 focus-visible:ring-ring active:translate-y-0 active:shadow-none disabled:pointer-events-none z-50 cursor-pointer"
+            className="absolute top-3 left-3 flex size-8 items-center justify-center rounded-none border-2 border-brutal-ink bg-destructive/10 text-destructive-foreground ring-offset-background transition-all hover:-translate-y-[1px] hover:bg-destructive hover:text-white hover:shadow-[2px_2px_0_var(--brutal-ink)] focus:outline-none focus-visible:ring-2 focus-visible:ring-ring active:translate-y-0 active:shadow-none disabled:pointer-events-none z-50 cursor-pointer"
           >
             <XIcon strokeWidth={3} className="size-4 pointer-events-none" />
             <span className="sr-only">Close</span>
@@ -83,7 +83,7 @@ function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="dialog-header"
-      className={cn("flex flex-col gap-1.5 border-b-2 border-foreground bg-saffron/10 px-6 py-4 text-right", className)}
+      className={cn("flex flex-col gap-1.5 border-b-2 border-brutal-ink bg-saffron/10 px-6 py-4 text-right", className)}
       {...props}
     />
   )
@@ -101,7 +101,7 @@ function DialogFooter({
     <div
       data-slot="dialog-footer"
       className={cn(
-        "flex flex-col-reverse gap-2 border-t-2 border-foreground bg-muted/50 px-6 py-4 sm:flex-row sm:justify-start",
+        "flex flex-col-reverse gap-2 border-t-2 border-brutal-ink bg-muted/50 px-6 py-4 sm:flex-row sm:justify-start",
         className
       )}
       {...props}

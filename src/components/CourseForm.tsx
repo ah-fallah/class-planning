@@ -109,7 +109,7 @@ export default function CourseForm({ initial, onSave, onCancel }: Props) {
             max={10}
             value={units}
             onChange={setUnits}
-            className="h-9 shadow-[2px_2px_0_var(--color-foreground)]"
+            className="h-9 shadow-[2px_2px_0_var(--brutal-ink)]"
           />
         </div>
         <div className="flex w-24 flex-col gap-1.5">
@@ -144,7 +144,7 @@ export default function CourseForm({ initial, onSave, onCancel }: Props) {
                 type="button"
                 variant="outline"
                 size="icon-sm"
-                className="rounded-none border-2 border-foreground bg-destructive/10 text-destructive-foreground shadow-[1px_1px_0_var(--color-foreground)] transition-all hover:-translate-y-[1px] hover:bg-destructive hover:text-white hover:shadow-[2px_2px_0_var(--color-foreground)] active:translate-y-[1px] active:shadow-none"
+                className="rounded-none border-2 border-brutal-ink bg-destructive/10 text-destructive-foreground shadow-[1px_1px_0_var(--brutal-ink)] transition-all hover:-translate-y-[1px] hover:bg-destructive hover:text-white hover:shadow-[2px_2px_0_var(--brutal-ink)] active:translate-y-[1px] active:shadow-none"
                 onClick={() => setGroups((gs) => gs.filter((x) => x.id !== g.id))}
                 aria-label="حذف گروه"
               >
@@ -185,7 +185,7 @@ export default function CourseForm({ initial, onSave, onCancel }: Props) {
                   type="button"
                   variant="outline"
                   size="icon-sm"
-                  className="rounded-none border-2 border-foreground bg-destructive/10 text-destructive-foreground shadow-[1px_1px_0_var(--color-foreground)] transition-all hover:-translate-y-[1px] hover:bg-destructive hover:text-white hover:shadow-[2px_2px_0_var(--color-foreground)] active:translate-y-[1px] active:shadow-none"
+                  className="rounded-none border-2 border-brutal-ink bg-destructive/10 text-destructive-foreground shadow-[1px_1px_0_var(--brutal-ink)] transition-all hover:-translate-y-[1px] hover:bg-destructive hover:text-white hover:shadow-[2px_2px_0_var(--brutal-ink)] active:translate-y-[1px] active:shadow-none"
                   aria-label="حذف جلسه"
                   onClick={() => updateGroup(g.id, { sessions: g.sessions.filter((_, i) => i !== si) })}
                 >

@@ -91,13 +91,13 @@ export default function ImportDialog({ onClose }: Props) {
 
           {result && (
             <div className="flex flex-col gap-2">
-              <div className="border-2 border-foreground bg-background px-3 py-2 text-sm font-bold shadow-[2px_2px_0_var(--color-foreground)]">
+              <div className="border-2 border-brutal-ink bg-background px-3 py-2 text-sm font-bold shadow-[2px_2px_0_var(--brutal-ink)]">
                 {result.courses.length} درس و {totalGroups} گروه شناسایی شد
                 {errors.length > 0 && (
                   <span className="text-warning"> — {errors.length} ردیف دارای خطا</span>
                 )}
               </div>
-              <div className="max-h-40 overflow-y-auto border-2 border-foreground/30 bg-background/50 px-3 py-2">
+              <div className="max-h-40 overflow-y-auto border-2 border-brutal-ink/30 bg-background/50 px-3 py-2">
                 <ul className="flex flex-col gap-1 text-xs font-bold">
                   {result.courses.map((c) => (
                     <li key={c.id}>

@@ -1,5 +1,6 @@
 import type { Course, DayIndex, Group, SelectionMap } from '@/types'
 import { DAY_NAMES, END_HOUR, minToTime, sessionsOverlap, START_HOUR } from '@/lib/time'
+import { BASE_COLORS, buildCourseColorMap, type BlockColor } from '@/lib/courseColors'
 import {
   Tooltip,
   TooltipContent,
@@ -7,66 +8,6 @@ import {
 } from '@/components/ui/tooltip'
 
 const TOTAL_MIN = (END_HOUR - START_HOUR) * 60
-
-interface BlockColor {
-  bg: string
-  fg: string
-}
-
-/** پالت پایه Neon-Brutalism — ۸ رنگ برند */
-export const BASE_COLORS: BlockColor[] = [
-  { bg: '#FF5C5C', fg: '#000000' }, // Neon Coral
-  { bg: '#4DEEEA', fg: '#000000' }, // Neon Cyan
-  { bg: '#FFE156', fg: '#000000' }, // Raw Yellow
-  { bg: '#74FF5C', fg: '#000000' }, // Neon Lime
-  { bg: '#FF66D8', fg: '#000000' }, // Hot Pink
-  { bg: '#FF9933', fg: '#000000' }, // Neon Orange
-  { bg: '#9966FF', fg: '#FFFFFF' }, // Electric Purple
-  { bg: '#00E5FF', fg: '#000000' }, // Electric Blue
-]
-
-/** حداقل اندازه پالت کامل: رنگ‌های برند + بقیه با گام زاویه طلایی */
-const MIN_PALETTE_SIZE = 24
-
-/** FNV-1a — hash پایدار از id درس برای انتخاب شبه‌تصادفی رنگ */
-function hashString(s: string): number {
-  let h = 2166136261
-  for (let i = 0; i < s.length; i++) {
-    h ^= s.charCodeAt(i)
-    h = Math.imul(h, 16777619)
-  }
-  return h >>> 0
-}
-
-/** پالت کامل: رنگ‌های برند + تکمیل با گام زاویه طلایی تا تعداد موردنیاز */
-function buildPalette(size: number): BlockColor[] {
-  const palette = [...BASE_COLORS]
-  for (let i = BASE_COLORS.length; palette.length < size; i++) {
-    const hue = Math.round((i * 137.508) % 360)
-    palette.push({ bg: `hsl(${hue} 85% 68%)`, fg: '#000000' })
-  }
-  return palette
-}
-
-/**
- * نقشه‌ی رنگ هر درس:
- * نقطه‌ی شروع هر درس در پالت با hash از id‌اش انتخاب می‌شود (توزیع شبه‌تصادفی
- * و متفاوت برای هر درس)، و اگر دو درس به یک رنگ برخورد کنند اولین رنگ آزاد
- * بعد از آن (linear probing) گرفته می‌شود تا هیچ دو درسی هم‌رنگ نباشند.
- * رنگ‌ها بین رندرها پایدار می‌مانند چون فقط به id درس وابسته‌اند.
- */
-export function buildCourseColorMap(courses: Course[]): Map<string, BlockColor> {
-  const palette = buildPalette(Math.max(MIN_PALETTE_SIZE, courses.length))
-  const used = new Set<number>()
-  const map = new Map<string, BlockColor>()
-  for (const c of courses) {
-    let idx = hashString(c.id) % palette.length
-    while (used.has(idx)) idx = (idx + 1) % palette.length
-    used.add(idx)
-    map.set(c.id, palette[idx])
-  }
-  return map
-}
 
 interface Block {
   course: Course
@@ -120,10 +61,10 @@ export default function TimetableGrid({
   const days = DAY_NAMES.slice(0, 6)
 
   return (
-    <div className="rounded-sm border-2 border-foreground bg-card shadow-[4px_4px_0_var(--color-foreground)] flex flex-col flex-1 min-h-[500px] lg:min-h-0 overflow-hidden">
+    <div className="rounded-sm border-2 border-brutal-ink bg-card shadow-[4px_4px_0_var(--brutal-ink)] flex flex-col flex-1 min-h-[500px] lg:min-h-0 overflow-hidden">
       <div className="flex flex-col h-full">
         {/* سربرگ روزها */}
-        <div className="shrink-0 grid grid-cols-[52px_repeat(6,minmax(0,1fr))] border-b-2 border-foreground bg-foreground text-background">
+        <div className="shrink-0 grid grid-cols-[52px_repeat(6,minmax(0,1fr))] border-b-2 border-brutal-ink bg-foreground text-background">
             <div />
             {days.map((d) => (
               <div key={d} className="truncate py-2 text-center text-xs font-black tracking-wide">
@@ -133,7 +74,7 @@ export default function TimetableGrid({
           </div>
           {/* بدنه — ارتفاع 반응‌گرا متناسب با والد */}
           <div className="flex-1 min-h-[400px] lg:min-h-0 grid grid-cols-[52px_repeat(6,minmax(0,1fr))]">
-            <div className="relative border-e-2 border-foreground">
+            <div className="relative border-e-2 border-brutal-ink">
           {Array.from({ length: END_HOUR - START_HOUR }, (_, i) => i + START_HOUR).map((h) => (
             <span
               key={h}
@@ -230,11 +171,11 @@ function DayColumn({
   }
 
   return (
-    <div className="relative border-e-2 border-foreground last:border-e-0" data-day={day}>
+    <div className="relative border-e-2 border-brutal-ink last:border-e-0" data-day={day}>
       {Array.from({ length: END_HOUR - START_HOUR + 1 }, (_, i) => (
         <div
           key={i}
-          className="absolute inset-x-0 border-t border-foreground/20"
+          className="absolute inset-x-0 border-t border-brutal-ink/20"
           style={{ top: `${((i * 60) / TOTAL_MIN) * 100}%` }}
         />
       ))}
@@ -250,7 +191,7 @@ function DayColumn({
           <Tooltip key={`${b.course.id}-${bi}`}>
             <TooltipTrigger asChild onClick={(e) => e.preventDefault()} onPointerDown={(e) => e.preventDefault()}>
               <div
-                className="absolute overflow-hidden rounded-none border-2 border-foreground text-[10px] leading-snug shadow-[2px_2px_0_var(--color-foreground)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[4px_4px_0_var(--color-foreground)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0_var(--color-foreground)] cursor-default hover:z-10 group"
+                className="absolute overflow-hidden rounded-none border-2 border-brutal-ink text-[10px] leading-snug shadow-[2px_2px_0_var(--brutal-ink)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[4px_4px_0_var(--brutal-ink)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0_var(--brutal-ink)] cursor-default hover:z-10 group"
                 style={{
                   top: `${Math.max(0, topPct)}%`,
                   height: `calc(${heightPct}% - 3px)`,
@@ -280,7 +221,7 @@ function DayColumn({
               onPointerDownOutside={(e) => {
                 e.preventDefault()
               }}
-              className="rounded-none border-2 border-foreground px-3 py-2 shadow-[4px_4px_0_var(--color-foreground)] z-50"
+              className="rounded-none border-2 border-brutal-ink px-3 py-2 shadow-[4px_4px_0_var(--brutal-ink)] z-50"
               style={{ backgroundColor: color.bg, color: color.fg }}
             >
               <div className="flex flex-col gap-1" dir="rtl">
